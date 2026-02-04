@@ -1,7 +1,5 @@
+// This file is edge-compatible (no Prisma, no bcrypt)
 import type { NextAuthConfig } from 'next-auth'
-import Credentials from 'next-auth/providers/credentials'
-import { prisma } from '@/lib/prisma'
-import bcrypt from 'bcryptjs'
 
 export const authConfig = {
     pages: {
@@ -44,55 +42,5 @@ export const authConfig = {
             return session
         },
     },
-    providers: [
-        Credentials({
-            async authorize(credentials) {
-                const { identifier, password } = credentials as {
-                    identifier: string
-                    password: string
-                }
-
-                if (!identifier || !password) {
-                    return null
-                }
-
-                // Try to find user by Email, Phone, or Serial Number
-                let user = await prisma.user.findFirst({
-                    where: {
-                        OR: [
-                            { email: identifier },
-                            { phone: identifier },
-                            { serialNumber: { code: identifier } }
-                        ]
-                    }
-                })
-
-                if (!user) {
-                    return null
-                }
-
-                if (!user.passwordHash) {
-                    return null
-                }
-
-                const passwordsMatch = await bcrypt.compare(password, user.passwordHash)
-
-                if (!passwordsMatch) {
-                    return null
-                }
-
-                // PRD Requirement: Check for active status
-                if (!user.isActive) {
-                    throw new Error("আপনার অ্যাকাউন্টটি ব্লক করা হয়েছে।")
-                }
-
-                return {
-                    id: user.id,
-                    name: user.name,
-                    email: user.email,
-                    role: user.role,
-                }
-            },
-        }),
-    ],
+    providers: [], // Empty array for middleware, providers added in auth.ts
 } satisfies NextAuthConfig
