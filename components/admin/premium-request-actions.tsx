@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { CheckCircle2, XCircle, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { updatePremiumRequestStatus } from '@/lib/actions/premium-actions'
 
 interface PremiumRequestActionsProps {
     requestId: string
@@ -18,14 +19,7 @@ export function PremiumRequestActions({ requestId }: PremiumRequestActionsProps)
 
         setLoading(status)
         try {
-            const response = await fetch(`/api/admin/premium/requests/${requestId}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status, adminNotes }),
-            })
-
-            if (!response.ok) throw new Error('Failed to update')
-
+            await updatePremiumRequestStatus(requestId, status, adminNotes)
             alert(`Request ${status.toLowerCase()} successfully`)
             router.refresh()
         } catch (error) {

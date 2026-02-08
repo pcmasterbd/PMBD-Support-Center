@@ -1,30 +1,27 @@
+import { UserSearch } from "@/components/admin/user-search";
+import { UserStatusToggle } from "@/components/admin/user-status-toggle";
+import { UserAddButton } from "@/components/admin/user-add-button";
+import { UserActionButtons } from "@/components/admin/user-action-buttons";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-    User,
     Calendar,
     Shield,
     ShieldAlert,
-    MoreVertical,
-    Search,
-    Filter,
     Mail,
-    Phone,
     TrendingUp,
     Users
 } from "lucide-react";
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import { UserSearch } from "@/components/admin/user-search";
-import { UserStatusToggle } from "@/components/admin/user-status-toggle";
 
 export default async function AdminUsersPage({
-    searchParams,
+    searchParams: searchParamsPromise,
 }: {
-    searchParams: { [key: string]: string | string[] | undefined }
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
+    const searchParams = await searchParamsPromise;
     const session = await auth();
 
     if (!session?.user?.id || (session.user.role !== 'ADMIN' && session.user.role !== 'SUPERADMIN')) {
@@ -36,10 +33,10 @@ export default async function AdminUsersPage({
     const users = await prisma.user.findMany({
         where: searchQuery ? {
             OR: [
-                { name: { contains: searchQuery, mode: 'insensitive' } },
-                { email: { contains: searchQuery, mode: 'insensitive' } },
-                { phone: { contains: searchQuery, mode: 'insensitive' } },
-                { serialNumber: { code: { contains: searchQuery, mode: 'insensitive' } } }
+                { name: { contains: searchQuery } },
+                { email: { contains: searchQuery } },
+                { phone: { contains: searchQuery } },
+                { serialNumber: { code: { contains: searchQuery } } }
             ]
         } : {},
         include: {
@@ -69,10 +66,7 @@ export default async function AdminUsersPage({
                         <TrendingUp className="w-4 h-4" />
                         Growth Stats
                     </Button>
-                    <Button className="gap-2">
-                        <Users className="w-4 h-4" />
-                        Add New User
-                    </Button>
+                    <UserAddButton />
                 </div>
             </div>
 
@@ -92,10 +86,7 @@ export default async function AdminUsersPage({
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <UserSearch />
                     <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm" className="gap-2 h-9">
-                            <Filter className="w-4 h-4" />
-                            Filters
-                        </Button>
+                        {/* Filters placeholder */}
                     </div>
                 </div>
 
@@ -165,9 +156,7 @@ export default async function AdminUsersPage({
                                         <UserStatusToggle userId={user.id} initialStatus={user.isActive} />
                                     </td>
                                     <td className="px-4 py-4 text-right">
-                                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                                            <MoreVertical className="w-4 h-4" />
-                                        </Button>
+                                        <UserActionButtons user={user} />
                                     </td>
                                 </tr>
                             ))}

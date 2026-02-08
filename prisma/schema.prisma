@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -23,6 +23,7 @@ model User {
   role          String    @default("USER") // USER, ADMIN, SUPERADMIN
   isActive      Boolean   @default(true)
   avatarUrl     String?
+  adminNotes    String?
 
   twoFactorEnabled Boolean @default(false)
   twoFactorSecret  String?
@@ -140,13 +141,22 @@ model Software {
   downloadCount Int       @default(0)
   
   downloads     UserDownload[]
-  mirrors       String[]
+  mirrors       SoftwareMirror[]
   checksum      String?
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   @@map("software")
+}
+
+model SoftwareMirror {
+  id         String   @id @default(cuid())
+  url        String
+  softwareId String
+  software   Software @relation(fields: [softwareId], references: [id], onDelete: Cascade)
+
+  @@map("software_mirrors")
 }
 
 // Premium Resources
@@ -298,4 +308,13 @@ model SystemSetting {
   updatedAt   DateTime @updatedAt
 
   @@map("system_settings")
+}
+
+model QuickReply {
+  id        String   @id @default(cuid())
+  category  String   // e.g., "BIOS", "Serial", "General"
+  message   String
+  createdAt DateTime @default(now())
+
+  @@map("quick_replies")
 }

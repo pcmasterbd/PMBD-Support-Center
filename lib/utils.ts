@@ -15,6 +15,8 @@ export function generateSerialNumber(): string {
 
 // Validate serial number format
 export function isValidSerialFormat(serial: string): boolean {
-  const pattern = /^PCMBD-\d{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/
+  // Allow alphanumeric and hyphens, 3 to 30 chars
+  // Examples: T5415, PCMBD-2024-XXXX-YYYY, A7878-X
+  const pattern = /^[A-Za-z0-9\-]{3,30}$/
   return pattern.test(serial)
 }

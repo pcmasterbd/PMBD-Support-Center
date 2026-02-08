@@ -44,7 +44,6 @@ export async function POST(request: NextRequest) {
 
         const result = await prisma.serialNumber.createMany({
             data,
-            skipDuplicates: true,
         })
 
         return NextResponse.json({

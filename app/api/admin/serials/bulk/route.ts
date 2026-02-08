@@ -37,7 +37,6 @@ export async function POST(request: NextRequest) {
         // Note: PostgreSQL createMany is supported by Prisma
         const result = await prisma.serialNumber.createMany({
             data: serials,
-            skipDuplicates: true, // In case of rare collision
         })
 
         return NextResponse.json(

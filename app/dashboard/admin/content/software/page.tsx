@@ -2,28 +2,21 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-    Download,
-    Plus,
-    Search,
-    HardDrive,
-    ShieldCheck,
-    ExternalLink,
-    MoreVertical,
-    Settings,
-    LayoutGrid,
-    Package
-} from "lucide-react";
+import { Download, Plus, HardDrive, ShieldCheck, ExternalLink, Settings, LayoutGrid, Package } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SoftwareSearch } from "@/components/admin/software-search";
 import { SoftwareStatsButton } from "@/components/admin/software-stats-button";
+import { SoftwareAddButton } from "@/components/admin/software-add-button";
+import { SoftwareActionButtons } from "@/components/admin/software-action-buttons";
+import { CategoryManager } from "@/components/admin/category-manager";
 
 export default async function AdminSoftwarePage({
-    searchParams,
+    searchParams: searchParamsPromise,
 }: {
-    searchParams: { [key: string]: string | string[] | undefined }
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
+    const searchParams = await searchParamsPromise;
     const session = await auth();
 
     if (!session?.user?.id || (session.user.role !== 'ADMIN' && session.user.role !== 'SUPERADMIN')) {
@@ -32,22 +25,25 @@ export default async function AdminSoftwarePage({
 
     const searchQuery = typeof searchParams.q === 'string' ? searchParams.q : undefined;
 
-    const software = await prisma.software.findMany({
-        where: searchQuery ? {
-            OR: [
-                { name: { contains: searchQuery, mode: 'insensitive' } },
-                { description: { contains: searchQuery, mode: 'insensitive' } },
-                { category: { name: { contains: searchQuery, mode: 'insensitive' } } }
-            ]
-        } : {},
-        include: {
-            category: true,
-            _count: {
-                select: { downloads: true }
-            }
-        },
-        orderBy: { createdAt: 'desc' },
-    });
+    const [software, categories] = await Promise.all([
+        prisma.software.findMany({
+            where: searchQuery ? {
+                OR: [
+                    { name: { contains: searchQuery } },
+                    { description: { contains: searchQuery } },
+                    { category: { name: { contains: searchQuery } } }
+                ]
+            } : {},
+            include: {
+                category: true,
+                _count: {
+                    select: { downloads: true }
+                }
+            },
+            orderBy: { createdAt: 'desc' },
+        }),
+        prisma.category.findMany({ where: { type: 'SOFTWARE' } })
+    ]);
 
     return (
         <div className="space-y-8 pb-10">
@@ -57,14 +53,8 @@ export default async function AdminSoftwarePage({
                     <p className="text-muted-foreground">সিস্টেমের সকল সফটওয়্যার, মিরর লিঙ্ক এবং ভার্সন কন্ট্রোল করুন</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" className="gap-2">
-                        <Settings className="w-4 h-4" />
-                        Global Config
-                    </Button>
-                    <Button className="gap-2">
-                        <Plus className="w-4 h-4" />
-                        Add New Software
-                    </Button>
+                    <CategoryManager categories={categories} type="SOFTWARE" />
+                    <SoftwareAddButton categories={categories} />
                 </div>
             </div>
 
@@ -139,17 +129,7 @@ export default async function AdminSoftwarePage({
                                             </span>
                                         </td>
                                         <td className="px-4 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-1">
-                                                <SoftwareStatsButton softwareId={item.id} softwareName={item.name} />
-                                                <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-                                                    <Link href={item.fileUrl} target="_blank">
-                                                        <ExternalLink className="w-4 h-4" />
-                                                    </Link>
-                                                </Button>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                    <MoreVertical className="w-4 h-4" />
-                                                </Button>
-                                            </div>
+                                            <SoftwareActionButtons software={item} categories={categories} />
                                         </td>
                                     </tr>
                                 )

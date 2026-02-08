@@ -1,21 +1,30 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Send, Loader2, AlertCircle, Zap, ShieldCheck } from 'lucide-react'
 
-interface AdminTicketReplyFormProps {
-    ticketId: string
+interface QuickReply {
+    id: string
+    category: string
+    message: string
 }
 
-export default function AdminTicketReplyForm({ ticketId }: AdminTicketReplyFormProps) {
+interface AdminTicketReplyFormProps {
+    ticketId: string
+    quickReplies: QuickReply[]
+}
+
+export default function AdminTicketReplyForm({ ticketId, quickReplies }: AdminTicketReplyFormProps) {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
+    const [showQuickReplies, setShowQuickReplies] = useState(false)
+    const textareaRef = useRef<HTMLTextAreaElement>(null)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -33,7 +42,7 @@ export default function AdminTicketReplyForm({ ticketId }: AdminTicketReplyFormP
 
             if (!response.ok) {
                 const data = await response.json()
-                setError(data.error || 'উত্তর পাঠানো সম্ভব হয়নি')
+                setError(data.error || 'উত্তর পাঠানো সম্ভব হয়নি')
                 setLoading(false)
                 return
             }
@@ -42,16 +51,35 @@ export default function AdminTicketReplyForm({ ticketId }: AdminTicketReplyFormP
             router.refresh()
             setLoading(false)
         } catch (err) {
-            setError('সার্ভার সমস্যা হয়েছে। আবার চেষ্টা করুন।')
+            setError('সার্ভার সমস্যা হয়েছে। আবার চেষ্টা করুন।')
             setLoading(false)
         }
     }
 
-    const templates = [
-        "বায়োস সেটিংসে গিয়ে বুট মোড 'UEFI' এ পরিবর্তন করে দেখুন।",
-        "দয়া করে আপনার পেনড্রাইভটি অন্য একটি ইউএসবি পোর্টে চেক করে দেখুন।",
-        "আপনার পিসির 'Secure Boot' অপশনটি ডিজেবল করে চেষ্টা করুন।",
-    ]
+    // Group replies by category
+    const repliesByCategory = quickReplies.reduce((acc, reply) => {
+        if (!acc[reply.category]) acc[reply.category] = []
+        acc[reply.category].push(reply)
+        return acc
+    }, {} as Record<string, QuickReply[]>)
+
+    const categories = Object.keys(repliesByCategory)
+    const [activeCategory, setActiveCategory] = useState(categories[0] || '')
+
+    const handleQuickReply = (temp: string) => {
+        setMessage(prev => {
+            if (!prev) return temp
+            return prev.trimEnd() + "\n\n" + temp
+        })
+
+        // Focus and scroll to bottom
+        setTimeout(() => {
+            if (textareaRef.current) {
+                textareaRef.current.focus()
+                textareaRef.current.scrollTop = textareaRef.current.scrollHeight
+            }
+        }, 0)
+    }
 
     return (
         <Card className="p-6 border-primary/20 bg-primary/5 shadow-inner">
@@ -60,29 +88,58 @@ export default function AdminTicketReplyForm({ ticketId }: AdminTicketReplyFormP
                     <ShieldCheck className="w-5 h-5 text-primary" />
                     Admin Response
                 </h3>
-                <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" className="text-[10px] h-7 gap-1">
-                        <Zap className="w-3 h-3" />
-                        Quick Reply
-                    </Button>
-                </div>
+                <button
+                    onClick={() => setShowQuickReplies(!showQuickReplies)}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md transition-all border ${showQuickReplies
+                            ? 'bg-orange-100 border-orange-200'
+                            : 'bg-background border-transparent hover:bg-muted'
+                        }`}
+                >
+                    <Zap className={`w-3 h-3 ${showQuickReplies ? 'text-orange-600' : 'text-muted-foreground'}`} />
+                    <span className={`text-[10px] font-bold uppercase ${showQuickReplies ? 'text-orange-700' : 'text-muted-foreground'}`}>
+                        Quick Reply Mode {showQuickReplies ? 'ON' : 'OFF'}
+                    </span>
+                </button>
             </div>
 
-            {/* Templates Suggestion */}
-            <div className="flex flex-wrap gap-2 mb-4">
-                {templates.map((temp, i) => (
-                    <button
-                        key={i}
-                        onClick={() => setMessage(temp)}
-                        className="text-[10px] bg-background border px-2 py-1 rounded hover:bg-primary/5 hover:border-primary/30 transition-all text-muted-foreground hover:text-primary"
-                    >
-                        {temp.slice(0, 25)}...
-                    </button>
-                ))}
-            </div>
+            {/* Quick Reply Tabs */}
+            {showQuickReplies && categories.length > 0 && (
+                <div className="animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="flex gap-1 mb-2 border-b">
+                        {categories.map(cat => (
+                            <button
+                                key={cat}
+                                onClick={() => setActiveCategory(cat)}
+                                className={`text-[9px] px-2 py-1 font-bold uppercase transition-all ${activeCategory === cat
+                                    ? 'border-b-2 border-primary text-primary'
+                                    : 'text-muted-foreground hover:text-primary'
+                                    }`}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Templates Suggestion */}
+                    <div className="flex flex-wrap gap-2 mb-6 min-h-[40px]">
+                        {repliesByCategory[activeCategory]?.map((reply) => (
+                            <button
+                                key={reply.id}
+                                type="button"
+                                onClick={() => handleQuickReply(reply.message)}
+                                className="text-[10px] bg-background border px-2 py-1.5 rounded-md hover:bg-primary/5 hover:border-primary/30 transition-all text-muted-foreground hover:text-primary text-left max-w-[200px] truncate shadow-sm"
+                                title={reply.message}
+                            >
+                                {reply.message}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <Textarea
+                    ref={textareaRef}
                     placeholder="Type your official response here..."
                     rows={6}
                     value={message}

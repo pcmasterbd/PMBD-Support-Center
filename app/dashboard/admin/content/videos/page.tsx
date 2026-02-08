@@ -2,21 +2,13 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-    Video,
-    Play,
-    Plus,
-    Search,
-    MoreVertical,
-    Eye,
-    Clock,
-    LayoutList,
-    Layers,
-    ExternalLink
-} from "lucide-react";
+import { Video, Play, Plus, Search, MoreVertical, Eye, Clock, LayoutList, Layers, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Input } from "@/components/ui/input";
+import { VideoAddButton } from "@/components/admin/video-add-button";
+import { VideoActionButtons } from "@/components/admin/video-action-buttons";
+import { CategoryManager } from "@/components/admin/category-manager";
 
 export default async function AdminVideosPage() {
     const session = await auth();
@@ -25,19 +17,20 @@ export default async function AdminVideosPage() {
         redirect('/dashboard');
     }
 
-    const videos = await prisma.videoTutorial.findMany({
-        include: {
-            category: true,
-            _count: {
-                select: { favorites: true }
-            }
-        },
-        orderBy: { createdAt: 'desc' },
-    });
-
-    const categories = await prisma.category.findMany({
-        where: { type: 'VIDEO' }
-    });
+    const [videos, categories] = await Promise.all([
+        prisma.videoTutorial.findMany({
+            include: {
+                category: true,
+                _count: {
+                    select: { favorites: true }
+                }
+            },
+            orderBy: { createdAt: 'desc' },
+        }),
+        prisma.category.findMany({
+            where: { type: 'VIDEO' }
+        })
+    ]);
 
     return (
         <div className="space-y-8 pb-10">
@@ -47,14 +40,8 @@ export default async function AdminVideosPage() {
                     <p className="text-muted-foreground">ইউজারদের জন্য নতুন টিউটোরিয়াল যোগ এবং এডিট করুন</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" className="gap-2">
-                        <Layers className="w-4 h-4" />
-                        Manage Categories
-                    </Button>
-                    <Button className="gap-2">
-                        <Plus className="w-4 h-4" />
-                        Add New Video
-                    </Button>
+                    <CategoryManager categories={categories} type="VIDEO" />
+                    <VideoAddButton categories={categories} />
                 </div>
             </div>
 
@@ -76,7 +63,7 @@ export default async function AdminVideosPage() {
                         <Input placeholder="ভিডিওর শিরোনাম দিয়ে সার্চ করুন..." className="pl-9" />
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm" className="gap-2 h-9">
+                        <Button variant="outline" size="sm" className="gap-2 h-9 text-xs font-bold uppercase">
                             <LayoutList className="w-4 h-4" />
                             List View
                         </Button>
@@ -97,9 +84,6 @@ export default async function AdminVideosPage() {
                                         <Play className="w-6 h-6 fill-current" />
                                     </Button>
                                 </div>
-                                <div className="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded font-bold">
-                                    {Math.floor((video.duration || 0) / 60)}:{(video.duration || 0) % 60}
-                                </div>
                             </div>
                             <div className="p-4">
                                 <div className="flex items-start justify-between gap-2 mb-2">
@@ -115,31 +99,16 @@ export default async function AdminVideosPage() {
                                 <div className="flex items-center justify-between mt-auto pt-4 border-t">
                                     <div className="flex items-center gap-3">
                                         <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" asChild>
-                                            <Link href={`/dashboard/admin/content/videos/${video.id}`}>
-                                                <MoreVertical className="w-4 h-4" />
-                                            </Link>
-                                        </Button>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" asChild>
                                             <Link href={`https://youtube.com/watch?v=${video.youtubeId}`} target="_blank">
                                                 <ExternalLink className="w-4 h-4" />
                                             </Link>
                                         </Button>
                                     </div>
-                                    <Button size="sm" variant="ghost" className="text-xs h-8">Edit Video</Button>
+                                    <VideoActionButtons video={video} categories={categories} />
                                 </div>
                             </div>
                         </Card>
                     ))}
-
-                    {/* Add New Placeholder */}
-                    <Link href="/dashboard/admin/content/videos/new">
-                        <Card className="h-full aspect-square md:aspect-auto flex flex-col items-center justify-center border-dashed border-2 hover:bg-muted/50 transition-all cursor-pointer group p-10">
-                            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <Plus className="w-8 h-8 text-muted-foreground group-hover:text-primary" />
-                            </div>
-                            <span className="font-bold text-muted-foreground group-hover:text-primary">নতুন ভিডিও যোগ করুন</span>
-                        </Card>
-                    </Link>
                 </div>
             </div>
         </div>

@@ -17,32 +17,41 @@ import {
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import AdminTicketReplyForm from "./admin-reply-form";
+import { TicketStatusSwitcher } from "@/components/admin/ticket-status-switcher";
+import { TicketPriorityToggle } from "@/components/admin/ticket-priority-toggle";
+import { ManagementNotes } from "@/components/admin/management-notes";
+import { QuickReplyManager } from "@/components/admin/quick-reply-manager";
+import { getQuickReplies } from "@/lib/actions/quick-reply-actions";
 
-export default async function AdminTicketDetailPage({ params }: { params: { id: string } }) {
+export default async function AdminTicketDetailPage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
+    const params = await paramsPromise;
     const session = await auth();
 
     if (!session?.user?.id || (session.user.role !== 'ADMIN' && session.user.role !== 'SUPERADMIN')) {
         redirect('/dashboard');
     }
 
-    const ticket: any = await prisma.supportTicket.findUnique({
-        where: { id: params.id },
-        include: {
-            messages: {
-                include: {
-                    user: {
-                        select: { name: true, role: true }
-                    }
+    const [ticket, quickReplies]: any = await Promise.all([
+        prisma.supportTicket.findUnique({
+            where: { id: params.id },
+            include: {
+                messages: {
+                    include: {
+                        user: {
+                            select: { name: true, role: true }
+                        }
+                    },
+                    orderBy: { createdAt: 'asc' }
                 },
-                orderBy: { createdAt: 'asc' }
-            },
-            user: {
-                include: {
-                    serialNumber: true
+                user: {
+                    include: {
+                        serialNumber: true
+                    }
                 }
             }
-        }
-    });
+        }),
+        getQuickReplies()
+    ]);
 
     if (!ticket) return notFound();
 
@@ -60,7 +69,7 @@ export default async function AdminTicketDetailPage({ params }: { params: { id: 
                         <h2 className="text-2xl font-bold tracking-tight">Ticket #{ticket.id.slice(-6).toUpperCase()}</h2>
                         <div className="flex items-center gap-3 mt-1">
                             <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border-2 ${ticket.status === 'OPEN' ? 'border-blue-500/50 text-blue-500' :
-                                    ticket.status === 'RESOLVED' ? 'border-green-500/50 text-green-500' : 'text-muted-foreground'
+                                ticket.status === 'RESOLVED' ? 'border-green-500/50 text-green-500' : 'text-muted-foreground'
                                 }`}>
                                 {ticket.status}
                             </span>
@@ -72,14 +81,9 @@ export default async function AdminTicketDetailPage({ params }: { params: { id: 
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" className="gap-2">
-                        <Settings2 className="w-4 h-4" />
-                        Change Status
-                    </Button>
-                    <Button variant="outline" size="sm" className="gap-2 text-red-600 hover:text-red-700">
-                        <AlertCircle className="w-4 h-4" />
-                        Mark as Urgent
-                    </Button>
+                    <QuickReplyManager quickReplies={quickReplies} />
+                    <TicketStatusSwitcher ticketId={ticket.id} currentStatus={ticket.status} />
+                    <TicketPriorityToggle ticketId={ticket.id} currentPriority={ticket.priority} />
                 </div>
             </div>
 
@@ -102,8 +106,8 @@ export default async function AdminTicketDetailPage({ params }: { params: { id: 
                                             </span>
                                         </div>
                                         <Card className={`p-4 shadow-sm border-2 ${isUserAdmin
-                                                ? 'bg-primary/5 border-primary/20 rounded-tr-none'
-                                                : 'bg-muted/10 border-muted rounded-tl-none'
+                                            ? 'bg-primary/5 border-primary/20 rounded-tr-none'
+                                            : 'bg-muted/10 border-muted rounded-tl-none'
                                             }`}>
                                             <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.message}</p>
                                             {message.attachmentUrl && (
@@ -120,7 +124,7 @@ export default async function AdminTicketDetailPage({ params }: { params: { id: 
 
                     {/* Admin Reply Area */}
                     <div className="pt-10">
-                        <AdminTicketReplyForm ticketId={ticket.id} />
+                        <AdminTicketReplyForm ticketId={ticket.id} quickReplies={quickReplies} />
                     </div>
                 </div>
 
@@ -176,16 +180,7 @@ export default async function AdminTicketDetailPage({ params }: { params: { id: 
                         </div>
                     </Card>
 
-                    <Card className="p-6 bg-red-50/50 border-red-100">
-                        <h4 className="font-bold text-sm text-red-600 mb-4 flex items-center gap-2">
-                            <AlertCircle className="w-4 h-4" />
-                            Management Notes
-                        </h4>
-                        <p className="text-xs text-muted-foreground leading-relaxed italic">
-                            "ইউজারকে বায়োস সেটিংস চেক করতে বলা হয়েছে। পেনড্রাইভটি সম্ভবত ইউইএফআই মুডে বুট হচ্ছে না।"
-                        </p>
-                        <Button variant="link" className="text-red-600 text-[10px] p-0 h-auto mt-2">Edit Notes</Button>
-                    </Card>
+                    <ManagementNotes userId={ticket.user.id} initialNotes={ticket.user.adminNotes} />
                 </div>
             </div>
         </div>

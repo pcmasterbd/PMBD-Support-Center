@@ -7,7 +7,8 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import TicketReplyForm from "./reply-form";
 
-export default async function TicketDetailPage({ params }: { params: { id: string } }) {
+export default async function TicketDetailPage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
+    const params = await paramsPromise;
     const session = await auth();
 
     if (!session?.user?.id) return null;
@@ -52,7 +53,7 @@ export default async function TicketDetailPage({ params }: { params: { id: strin
                         <h2 className="text-2xl font-bold tracking-tight">{ticket.subject}</h2>
                         <div className="flex items-center gap-3 mt-1">
                             <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border-2 ${ticket.status === 'OPEN' ? 'border-blue-500/50 text-blue-500' :
-                                    ticket.status === 'RESOLVED' ? 'border-green-500/50 text-green-500' : 'text-muted-foreground'
+                                ticket.status === 'RESOLVED' ? 'border-green-500/50 text-green-500' : 'text-muted-foreground'
                                 }`}>
                                 {ticket.status}
                             </span>
@@ -80,8 +81,8 @@ export default async function TicketDetailPage({ params }: { params: { id: strin
                                     </span>
                                 </div>
                                 <Card className={`p-4 shadow-sm border-2 ${isUserAdmin
-                                        ? 'bg-primary/5 border-primary/10 rounded-tl-none'
-                                        : 'bg-muted/30 border-muted rounded-tr-none'
+                                    ? 'bg-primary/5 border-primary/10 rounded-tl-none'
+                                    : 'bg-muted/30 border-muted rounded-tr-none'
                                     }`}>
                                     <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.message}</p>
                                     {message.attachmentUrl && (

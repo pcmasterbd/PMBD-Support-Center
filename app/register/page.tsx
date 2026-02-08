@@ -67,6 +67,24 @@ export default function RegisterPage() {
         }
     }
 
+    const handleResend = async () => {
+        setLoading(true)
+        try {
+            const { resendVerificationEmail } = await import('@/lib/actions/auth-actions')
+            const result = await resendVerificationEmail(formData.email)
+
+            if (result.error) {
+                alert(result.error)
+            } else {
+                alert('ইমেইল পাঠানো হয়েছে! চেক করুন। (স্প্যাম ফোল্ডার চেক করতে ভুলবেন না)')
+            }
+        } catch (error) {
+            alert('Something went wrong!')
+        } finally {
+            setLoading(false)
+        }
+    }
+
     if (step === 2) {
         return (
             <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-primary/5 via-blue-500/5 to-purple-500/5">
@@ -79,11 +97,18 @@ export default function RegisterPage() {
                         আমরা আপনার ইমেইল ঠিকানায় (<strong>{formData.email}</strong>) একটি ভেরিফিকেশন লিঙ্ক পাঠিয়েছি। অনুগ্রহ করে আপনার ইনবক্স চেক করুন এবং আপনার অ্যাকাউন্টটি সক্রিয় করুন।
                     </p>
                     <div className="space-y-4">
-                        <Button variant="outline" className="w-full" onClick={() => setStep(1)}>
+                        <Button variant="outline" className="w-full" onClick={() => setStep(1)} disabled={loading}>
                             তথ্য পরিবর্তন করুন
                         </Button>
                         <p className="text-sm text-muted-foreground">
-                            ইমেইল পাননি? <button className="text-primary hover:underline font-medium">রিসেন্ড করুন</button>
+                            ইমেইল পাননি?
+                            <button
+                                onClick={handleResend}
+                                disabled={loading}
+                                className="text-primary hover:underline font-medium ml-1 disabled:opacity-50"
+                            >
+                                {loading ? 'পাঠানো হচ্ছে...' : 'রিসেন্ড করুন'}
+                            </button>
                         </p>
                     </div>
                 </Card>

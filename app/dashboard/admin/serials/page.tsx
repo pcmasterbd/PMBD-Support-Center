@@ -19,12 +19,15 @@ import { redirect } from "next/navigation";
 import { BulkGenerateButton } from "@/components/admin/bulk-generate-button";
 import { SerialSearch } from "@/components/admin/serials-search";
 import { BulkImportSerials } from "@/components/admin/bulk-import-serials";
+import { SerialAddButton } from "@/components/admin/serial-add-button";
+import { SerialActionButtons } from "@/components/admin/serial-action-buttons";
 
 export default async function AdminSerialsPage({
-    searchParams,
+    searchParams: searchParamsPromise,
 }: {
-    searchParams: { [key: string]: string | string[] | undefined }
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
+    const searchParams = await searchParamsPromise;
     const session = await auth();
 
     if (!session?.user?.id || (session.user.role !== 'ADMIN' && session.user.role !== 'SUPERADMIN')) {
@@ -37,7 +40,6 @@ export default async function AdminSerialsPage({
         where: searchQuery ? {
             code: {
                 contains: searchQuery,
-                mode: 'insensitive'
             }
         } : {},
         include: {
@@ -63,6 +65,7 @@ export default async function AdminSerialsPage({
                 <div className="flex items-center gap-2">
                     <BulkImportSerials />
                     <BulkGenerateButton />
+                    <SerialAddButton />
                 </div>
             </div>
 
@@ -156,14 +159,7 @@ export default async function AdminSerialsPage({
                                         )}
                                     </td>
                                     <td className="px-4 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-1">
-                                            <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                <History className="w-4 h-4" />
-                                            </Button>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                <MoreVertical className="w-4 h-4" />
-                                            </Button>
-                                        </div>
+                                        <SerialActionButtons serial={serial} />
                                     </td>
                                 </tr>
                             ))}

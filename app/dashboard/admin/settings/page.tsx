@@ -1,23 +1,16 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-    Settings,
+    Globe,
     Mail,
     MessageSquare,
     ShieldCheck,
-    Save,
-    Globe,
     Bell,
-    Lock,
-    RefreshCw
 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { SettingsForm } from "@/components/admin/settings-form";
 
 export default async function AdminSettingsPage() {
     const session = await auth();
@@ -28,9 +21,13 @@ export default async function AdminSettingsPage() {
     }
 
     // Fetch all system settings
-    const settings: any = await (prisma as any).systemSetting.findMany();
+    const rawSettings = await prisma.systemSetting.findMany();
 
-    const getSetting = (key: string) => settings.find((s: any) => s.key === key)?.value || "";
+    // Convert to Record<string, string>
+    const initialSettings = rawSettings.reduce((acc: any, setting) => {
+        acc[setting.key] = setting.value;
+        return acc;
+    }, {});
 
     return (
         <div className="space-y-8 pb-10 max-w-5xl">
@@ -39,10 +36,6 @@ export default async function AdminSettingsPage() {
                     <h2 className="text-3xl font-bold tracking-tight">সিস্টেম সেটিংস</h2>
                     <p className="text-muted-foreground">সিস্টেমের গ্লোবাল কনফিগারেশন এবং সিকিউরিটি ম্যানেজ করুন</p>
                 </div>
-                <Button className="gap-2">
-                    <Save className="w-4 h-4" />
-                    Save All Changes
-                </Button>
             </div>
 
             <div className="grid lg:grid-cols-4 gap-8">
@@ -67,89 +60,7 @@ export default async function AdminSettingsPage() {
                     </Button>
                 </div>
 
-                {/* Settings Form */}
-                <div className="lg:col-span-3 space-y-6">
-                    {/* General Settings */}
-                    <Card className="p-6 space-y-6">
-                        <div className="flex items-center gap-2 pb-2 border-b">
-                            <Globe className="w-5 h-5 text-primary" />
-                            <h3 className="font-bold text-lg">General Information</h3>
-                        </div>
-
-                        <div className="grid gap-4">
-                            <div className="space-y-2">
-                                <Label>Site Name</Label>
-                                <Input defaultValue={getSetting("site_name") || "PC MASTER BD Support Center"} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Support Email</Label>
-                                <Input defaultValue={getSetting("support_email") || "support@pcmbdbd.com"} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Contact Phone</Label>
-                                <Input defaultValue={getSetting("contact_phone") || "+880 1XXX-XXXXXX"} />
-                            </div>
-
-                            <div className="flex items-center justify-between pt-4">
-                                <div className="space-y-0.5">
-                                    <Label>Maintenance Mode</Label>
-                                    <p className="text-[10px] text-muted-foreground">ইউজারদের জন্য সাইটটি সাময়িকভাবে বন্ধ রাখুন</p>
-                                </div>
-                                <Switch />
-                            </div>
-                        </div>
-                    </Card>
-
-                    {/* Email Settings */}
-                    <Card className="p-6 space-y-6">
-                        <div className="flex items-center gap-2 pb-2 border-b">
-                            <Mail className="w-5 h-5 text-primary" />
-                            <h3 className="font-bold text-lg">Email Configuration (SMTP)</h3>
-                        </div>
-
-                        <div className="grid gap-4">
-                            <div className="space-y-2">
-                                <Label>Resend API Key</Label>
-                                <Input type="password" value="••••••••••••••••" readOnly />
-                                <p className="text-[10px] text-muted-foreground">সুরক্ষার জন্য API কী এনক্রিপ্টেড থাকে</p>
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Sender Name</Label>
-                                <Input defaultValue={getSetting("smtp_from_name") || "PC MASTER BD"} />
-                            </div>
-                            <Button variant="outline" size="sm" className="w-fit gap-2">
-                                <RefreshCw className="w-3 h-3" />
-                                Test Connection
-                            </Button>
-                        </div>
-                    </Card>
-
-                    {/* Security Settings */}
-                    <Card className="p-6 border-red-100 bg-red-50/10 space-y-6">
-                        <div className="flex items-center gap-2 pb-2 border-b border-red-100">
-                            <Lock className="w-5 h-5 text-red-600" />
-                            <h3 className="font-bold text-lg text-red-600">Advanced Security</h3>
-                        </div>
-
-                        <div className="grid gap-4">
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-0.5">
-                                    <Label>Force 2FA for Admins</Label>
-                                    <p className="text-[10px] text-muted-foreground">সকল এডমিন ইউজারদের জন্য 2FA বাধ্যতামূলক করুন</p>
-                                </div>
-                                <Switch />
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-0.5">
-                                    <Label>Login Attempt Limit</Label>
-                                    <p className="text-[10px] text-muted-foreground">ভুল পাসওয়ার্ড দিলে ৫ মিনিটের জন্য একাউন্ট লক হবে</p>
-                                </div>
-                                <Switch defaultChecked />
-                            </div>
-                        </div>
-                    </Card>
-                </div>
+                <SettingsForm initialSettings={initialSettings} />
             </div>
         </div>
     );
