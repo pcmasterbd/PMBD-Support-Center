@@ -15,7 +15,7 @@ export const authConfig = {
                 if (isLoggedIn) {
                     // Force admin to landing on admin dashboard if they hit the base /dashboard
                     if (nextUrl.pathname === '/dashboard' && isAdmin) {
-                        return Response.redirect(new URL('/dashboard/admin', nextUrl))
+                        return Response.redirect(new URL('/dashboard/admin', nextUrl.toString()))
                     }
                     return true
                 }
@@ -23,7 +23,8 @@ export const authConfig = {
             } else if (isLoggedIn) {
                 // Determine target dashboard based on role
                 const target = isAdmin ? '/dashboard/admin' : '/dashboard'
-                return Response.redirect(new URL(target, nextUrl))
+                if (nextUrl.pathname === target) return true;
+                return Response.redirect(new URL(target, nextUrl.toString()))
             }
             return true
         },
