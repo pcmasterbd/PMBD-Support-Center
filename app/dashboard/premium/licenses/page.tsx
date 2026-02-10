@@ -1,12 +1,21 @@
 import { prisma } from '@/lib/prisma'
+import { auth } from '@/auth'
 import { Card } from '@/components/ui/card'
 import { Key, Copy, ShieldCheck } from 'lucide-react'
 import { CopyButton } from '@/components/copy-button'
 import { LicenseKey } from '@prisma/client'
 
 export default async function LicenseKeysPage() {
+    const session = await auth()
+    if (!session?.user?.id) return null
+
     const licenses = await prisma.licenseKey.findMany({
-        where: { status: 'AVAILABLE' },
+        where: {
+            OR: [
+                { assignedToUser: session.user.id, status: 'ASSIGNED' },
+                // { status: 'AVAILABLE' } // Uncomment if we want public keys too? User asked to restrict.
+            ]
+        },
         orderBy: { softwareName: 'asc' },
     })
 

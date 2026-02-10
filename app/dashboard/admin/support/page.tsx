@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Input } from "@/components/ui/input";
+import { TicketList } from "@/components/admin/support/ticket-list";
 
 export default async function AdminSupportDashboard() {
     const session = await auth();
@@ -70,14 +71,13 @@ export default async function AdminSupportDashboard() {
                     <p className="text-muted-foreground">ইউজারদের টেকনিক্যাল সমস্যার সমাধান এবং টিকেট পরিচালনা করুন</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" className="gap-2">
-                        <BarChart3 className="w-4 h-4" />
-                        Analytics
+                    <Button variant="outline" className="gap-2" asChild>
+                        <Link href="/dashboard/admin/support/analytics">
+                            <BarChart3 className="w-4 h-4" />
+                            Analytics
+                        </Link>
                     </Button>
-                    <Button className="gap-2">
-                        <MessageSquare className="w-4 h-4" />
-                        Bulk Reply
-                    </Button>
+                    {/* Bulk Reply is now handled inside TicketList */}
                 </div>
             </div>
 
@@ -135,66 +135,7 @@ export default async function AdminSupportDashboard() {
 
                 {/* Master Ticket List */}
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <h3 className="font-bold text-xl">সকল টিকেট লিস্ট</h3>
-                        <div className="flex items-center gap-2">
-                            <div className="relative">
-                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input placeholder="টিকেট সার্চ করুন..." className="pl-9 w-64" />
-                            </div>
-                            <Button variant="outline" size="icon">
-                                <Filter className="w-4 h-4" />
-                            </Button>
-                        </div>
-                    </div>
-
-                    <div className="grid gap-3">
-                        {allTickets.map((ticket: any) => (
-                            <Link key={ticket.id} href={`/dashboard/admin/support/${ticket.id}`}>
-                                <Card className="p-4 hover:bg-muted/30 transition-all border-2 border-transparent hover:border-primary/10">
-                                    <div className="flex items-center justify-between gap-4">
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase border ${ticket.status === 'OPEN' ? 'bg-blue-500/10 text-blue-500 border-blue-200' :
-                                                        ticket.status === 'IN_PROGRESS' ? 'bg-purple-500/10 text-purple-500 border-purple-200' :
-                                                            'bg-green-500/10 text-green-500 border-green-200'
-                                                    }`}>
-                                                    {ticket.status}
-                                                </span>
-                                                <span className={`text-[10px] font-bold uppercase ${ticket.priority === 'HIGH' || ticket.priority === 'URGENT' ? 'text-red-500' : 'text-muted-foreground'
-                                                    }`}>
-                                                    {ticket.priority}
-                                                </span>
-                                                <span className="text-[10px] text-muted-foreground">#{ticket.id.slice(-6).toUpperCase()}</span>
-                                            </div>
-                                            <h4 className="font-bold text-sm md:text-base truncate">{ticket.subject}</h4>
-                                            <div className="flex items-center gap-4 mt-2 text-[10px] text-muted-foreground">
-                                                <span className="flex items-center gap-1 font-medium">
-                                                    <User className="w-3 h-3" />
-                                                    {ticket.user.name}
-                                                </span>
-                                                <span className="flex items-center gap-1 font-medium">
-                                                    <MessageSquare className="w-3 h-3" />
-                                                    {ticket._count?.messages || 0} Replies
-                                                </span>
-                                                <span className="flex items-center gap-1">
-                                                    <Clock className="w-3 h-3" />
-                                                    {new Date(ticket.updatedAt).toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' })}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className="p-2 rounded-full hover:bg-muted transition-colors">
-                                            <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                                        </div>
-                                    </div>
-                                </Card>
-                            </Link>
-                        ))}
-                    </div>
-
-                    <div className="flex justify-center pt-6">
-                        <Button variant="outline">View All Tickets</Button>
-                    </div>
+                    <TicketList tickets={allTickets} />
                 </div>
             </div>
         </div>

@@ -101,6 +101,11 @@ const adminMenuItems = [
         icon: Settings,
     },
     {
+        title: 'কাস্টমার ম্যানেজমেন্ট',
+        href: '/dashboard/admin/customers',
+        icon: Users,
+    },
+    {
         title: 'অডিট লগ',
         href: '/dashboard/admin/logs',
         icon: FileText,

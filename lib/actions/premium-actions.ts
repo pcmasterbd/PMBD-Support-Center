@@ -139,7 +139,31 @@ export async function updateLicenseKey(id: string, formData: FormData) {
     revalidatePath('/dashboard/admin/premium')
 }
 
-export async function deleteLicenseKey(id: string) {
-    await prisma.licenseKey.delete({ where: { id } })
+
+export async function assignLicenseKey(licenseId: string, userId: string) {
+    if (!licenseId || !userId) throw new Error("Missing license or user ID")
+
+    await prisma.licenseKey.update({
+        where: { id: licenseId },
+        data: {
+            assignedToUser: userId,
+            status: 'ASSIGNED'
+        }
+    })
+
     revalidatePath('/dashboard/admin/premium')
+    revalidatePath('/dashboard/premium/licenses')
+}
+
+export async function unassignLicenseKey(licenseId: string) {
+    await prisma.licenseKey.update({
+        where: { id: licenseId },
+        data: {
+            assignedToUser: null,
+            status: 'AVAILABLE'
+        }
+    })
+
+    revalidatePath('/dashboard/admin/premium')
+    revalidatePath('/dashboard/premium/licenses')
 }

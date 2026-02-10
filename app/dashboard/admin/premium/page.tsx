@@ -24,6 +24,7 @@ import { redirect } from "next/navigation";
 import { PremiumRequestActions } from "@/components/admin/premium-request-actions";
 import { PremiumRequestSearch } from "@/components/admin/premium-request-search";
 import { PremiumResourceAddButton } from "@/components/admin/premium-resource-add-button";
+import { AssignLicenseDialog } from "@/components/admin/premium/assign-license-dialog";
 
 export default async function AdminPremiumPage({
     searchParams: searchParamsPromise,
@@ -211,9 +212,27 @@ export default async function AdminPremiumPage({
                                 <div key={key.id} className="p-3 bg-background border rounded-lg hover:border-primary/30 transition-all group">
                                     <div className="flex items-center justify-between mb-1">
                                         <h5 className="font-bold text-sm tracking-tight">{key.softwareName}</h5>
-                                        <span className={`text-[8px] font-black px-1.5 py-0.5 rounded uppercase ${key.status === 'AVAILABLE' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{key.status}</span>
+                                        <span className={`text-[8px] font-black px-1.5 py-0.5 rounded uppercase ${key.status === 'AVAILABLE' ? 'bg-green-100 text-green-700' :
+                                            key.status === 'ASSIGNED' ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'}`}>
+                                            {key.status}
+                                        </span>
                                     </div>
-                                    <p className="text-[10px] font-mono text-muted-foreground truncate opacity-70">{key.key}</p>
+                                    <p className="text-[10px] font-mono text-muted-foreground truncate opacity-70 mb-2">{key.key}</p>
+
+                                    <div className="flex justify-end">
+                                        <AssignLicenseDialog
+                                            licenseId={key.id}
+                                            softwareName={key.softwareName}
+                                            isAssigned={key.status === 'ASSIGNED'}
+                                            currentAssigneeId={key.assignedToUser}
+                                            trigger={
+                                                <Button size="sm" variant="outline" className="text-xs h-7 gap-1">
+                                                    <User className="w-3 h-3" />
+                                                    {key.status === 'ASSIGNED' ? 'Manage' : 'Assign'}
+                                                </Button>
+                                            }
+                                        />
+                                    </div>
                                 </div>
                             ))}
                             {keys.length === 0 && <p className="text-xs text-center p-4 italic text-muted-foreground">No license keys added</p>}

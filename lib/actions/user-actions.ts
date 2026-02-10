@@ -63,3 +63,26 @@ export async function toggleUserStatus(userId: string, isActive: boolean) {
 
     revalidatePath('/dashboard/admin/users')
 }
+
+export async function searchUsers(query: string) {
+    if (!query || query.length < 2) return []
+
+    const users = await prisma.user.findMany({
+        where: {
+            OR: [
+                { name: { contains: query, mode: 'insensitive' } },
+                { email: { contains: query, mode: 'insensitive' } },
+                { phone: { contains: query, mode: 'insensitive' } }
+            ]
+        },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true
+        },
+        take: 5
+    })
+
+    return users
+}

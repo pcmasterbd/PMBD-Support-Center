@@ -318,3 +318,21 @@ model QuickReply {
 
   @@map("quick_replies")
 }
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String   // "Namber"
+  address   String?
+  package   String?
+  price     Float?   // "Package/ Price"
+  totalBill Float?   // "Total TK"
+  
+  pendrivePurchaseDate DateTime?
+  pendriveSN           String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("customers")
+}
