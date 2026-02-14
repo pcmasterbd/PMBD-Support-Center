@@ -1,0 +1,17 @@
+﻿
+> temp_app@0.1.0 build
+> npx prisma generate && next build
+
+Prisma schema loaded from prisma\schema.prisma
+
+Γ£ö Generated Prisma Client (v6.19.2) to .\node_modules\@prisma\client in 223ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+  Skipping creating a lockfile at C:\Users\PC MASTER BD\Desktop\PMBD Support Center\.next\lock because we're using WASM bindings
+Γû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...

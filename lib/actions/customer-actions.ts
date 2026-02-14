@@ -61,7 +61,7 @@ export async function createCustomer(data: CustomerFormData) {
         console.error('Error creating customer:', error)
         // Check for Prisma error codes if needed, or Zod errors
         if (error instanceof z.ZodError) {
-            const zodError = error as z.ZodError;
+            const zodError = error as any;
             return { success: false, error: zodError.errors[0]?.message || 'Validation error' }
         }
         return { success: false, error: 'Failed to create customer: ' + (error instanceof Error ? error.message : 'Unknown error') }

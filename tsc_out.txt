@@ -1,0 +1,2 @@
+﻿app/dashboard/admin/support/analytics/page.tsx(7,61): error TS2724: '"lucide-react"' has no exported member named 'messageSquare'. Did you mean 'MessageSquare'?
+lib/actions/customer-actions.ts(65,54): error TS2339: Property 'errors' does not exist on type 'ZodError<any>'.

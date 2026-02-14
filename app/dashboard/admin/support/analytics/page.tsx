@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { redirect } from "next/navigation";
-import { BarChart3, TrendingUp, Users, Clock, CheckCircle2, messageSquare } from "lucide-react";
+import { BarChart3, TrendingUp, Users, Clock, CheckCircle2, MessageSquare } from "lucide-react";
 
 export default async function SupportAnalyticsPage() {
     const session = await auth();

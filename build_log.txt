@@ -1,0 +1,5 @@
+﻿
+> temp_app@0.1.0 build
+> npx prisma generate && next build
+
+Prisma schema loaded from prisma\schema.prisma
