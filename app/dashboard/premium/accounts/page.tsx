@@ -33,11 +33,11 @@ export default async function PremiumAccountsPage() {
     return (
         <div className="space-y-8 pb-10">
             <div className="flex flex-col gap-1">
-                <h2 className="text-3xl font-extrabold tracking-tight">প্রিমিয়াম রিসোর্স</h2>
+                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">প্রিমিয়াম রিসোর্স</h2>
                 <p className="text-muted-foreground">আপনার প্রয়োজনীয় প্রিমিয়াম একাউন্ট এবং লাইসেন্স কী এখান থেকে সংগ্রহ করুন</p>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-8">
+            <div className="grid md-tab:grid-cols-2 lg:grid-cols-3 gap-4 sm-std:gap-6 md:gap-8">
                 {/* Available Resources */}
                 <div className="lg:col-span-2 space-y-6">
                     <h3 className="font-bold text-xl flex items-center gap-2">
@@ -45,10 +45,10 @@ export default async function PremiumAccountsPage() {
                         উপলব্ধ সেবাসমূহ
                     </h3>
 
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid sm-tab:grid-cols-2 gap-4">
                         {accounts.length > 0 ? (
                             accounts.map((account) => (
-                                <Card key={account.id} className="p-6 hover:shadow-lg transition-all border-2 border-transparent hover:border-primary/20 group">
+                                <Card key={account.id} className="p-4 sm-std:p-6 hover:shadow-lg transition-all border-2 border-transparent hover:border-primary/20 group">
                                     <div className="flex items-start justify-between mb-4">
                                         <div className="p-3 bg-primary/10 rounded-xl group-hover:bg-primary group-hover:text-white transition-colors">
                                             <Key className="w-6 h-6" />

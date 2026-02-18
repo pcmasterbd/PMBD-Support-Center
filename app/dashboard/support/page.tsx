@@ -40,9 +40,9 @@ export default async function SupportPage() {
 
     return (
         <div className="space-y-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-col md-tab:flex-row md-tab:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">সাপোর্ট সেন্টার</h2>
+                    <h2 className="text-2xl sm-std:text-3xl font-bold tracking-tight">সাপোর্ট সেন্টার</h2>
                     <p className="text-muted-foreground">আপনার সকল টেকনিক্যাল সমস্যা এখানে জানান</p>
                 </div>
                 <Link href="/dashboard/support/new">
@@ -68,7 +68,7 @@ export default async function SupportPage() {
                                                 {ticket.priority} Priority
                                             </span>
                                         </div>
-                                        <h3 className="font-bold text-lg group-hover:text-primary transition-colors">{ticket.subject}</h3>
+                                        <h3 className="font-bold text-base sm:text-lg group-hover:text-primary transition-colors line-clamp-1">{ticket.subject}</h3>
                                         <div className="flex items-center gap-4 text-xs text-muted-foreground">
                                             <div className="flex items-center gap-1">
                                                 <MessageSquare className="w-3 h-3" />
@@ -88,7 +88,7 @@ export default async function SupportPage() {
                         </Link>
                     ))
                 ) : (
-                    <Card className="p-20 text-center flex flex-col items-center justify-center border-dashed">
+                    <Card className="p-8 sm:p-20 text-center flex flex-col items-center justify-center border-dashed">
                         <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center mb-6">
                             <AlertCircle className="w-8 h-8 text-muted-foreground" />
                         </div>
@@ -106,7 +106,7 @@ export default async function SupportPage() {
             {/* FAQ/Help section */}
             <div className="pt-10">
                 <h3 className="font-bold text-xl mb-6">সাধারণ কিছু জিজ্ঞাসা (FAQ)</h3>
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md-tab:grid-cols-2 gap-4">
                     <FaqItem
                         q="আমার পেনড্রাইভ কাজ করছে না, কি করব?"
                         a="প্রথমে নিশ্চিত করুন আপনার ইউএসবি পোর্টটি ঠিক আছে কি না। সমস্যাটি অন্য কম্পিউটারেও হচ্ছে কি না দেখুন। সমস্যা সমাধান না হলে একটি সাপোর্ট টিকেট দিন।"

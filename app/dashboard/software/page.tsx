@@ -20,7 +20,7 @@ export default async function SoftwarePage() {
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-3xl font-bold mb-2">সফটওয়্যার ডাউনলোড</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold mb-2">সফটওয়্যার ডাউনলোড</h2>
                 <p className="text-muted-foreground">
                     প্রয়োজনীয় সকল সফটওয়্যার এবং টুলস এক জায়গায়
                 </p>
@@ -28,12 +28,12 @@ export default async function SoftwarePage() {
 
             {categories.map((category) => (
                 <div key={category.id}>
-                    <h3 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+                    <h3 className="text-xl sm:text-2xl font-semibold mb-4 flex items-center gap-2">
                         {category.icon && <span>{category.icon}</span>}
                         {category.name}
                     </h3>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid md-tab:grid-cols-2 lg:grid-cols-3 gap-4">
                         {category.software.map((software) => (
                             <SoftwareCard
                                 key={software.id}
@@ -115,7 +115,7 @@ function SoftwareCard({ software, userId }: { software: any; userId?: string }) 
                     {software.checksum && (
                         <div className="mb-4 pb-4 border-b">
                             <p className="text-[10px] text-muted-foreground mb-1 uppercase tracking-wider font-semibold">MD5 Checksum</p>
-                            <code className="text-[10px] bg-muted block p-1.5 rounded font-mono truncate cursor-help" title={software.checksum}>
+                            <code className="text-[10px] bg-muted block p-1.5 rounded font-mono truncate cursor-help break-all" title={software.checksum}>
                                 {software.checksum}
                             </code>
                         </div>

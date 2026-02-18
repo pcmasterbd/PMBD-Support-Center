@@ -30,10 +30,14 @@ const buttonVariants = cva(
         "icon-sm": "size-8",
         "icon-lg": "size-10",
       },
+      full: {
+        true: "w-full",
+      },
     },
     defaultVariants: {
       variant: "default",
       size: "default",
+      full: false,
     },
   }
 )

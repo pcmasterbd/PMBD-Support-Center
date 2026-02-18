@@ -65,33 +65,32 @@ export default async function AdminSupportDashboard() {
 
     return (
         <div className="space-y-8 pb-10">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">সাপোর্ট টিকেট ম্যানেজমেন্ট</h2>
-                    <p className="text-muted-foreground">ইউজারদের টেকনিক্যাল সমস্যার সমাধান এবং টিকেট পরিচালনা করুন</p>
+                    <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">সাপোর্ট টিকেট ম্যানেজমেন্ট</h2>
+                    <p className="text-xs sm:text-sm text-muted-foreground font-medium">ইউজারদের টেকনিক্যাল সমস্যার সমাধান এবং টিকেট পরিচালনা করুন</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" className="gap-2" asChild>
+                    <Button variant="outline" size="sm" className="gap-2 h-9 text-xs sm:text-sm rounded-xl" asChild>
                         <Link href="/dashboard/admin/support/analytics">
                             <BarChart3 className="w-4 h-4" />
                             Analytics
                         </Link>
                     </Button>
-                    {/* Bulk Reply is now handled inside TicketList */}
                 </div>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat, i) => (
-                    <Card key={i} className="p-6">
-                        <div className="flex items-center gap-4">
-                            <div className={`p-3 rounded-xl ${stat.bg}`}>
-                                <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                    <Card key={i} className="p-4 sm:p-6 rounded-2xl border-2">
+                        <div className="flex items-center gap-3 sm:gap-4">
+                            <div className={`p-2 sm:p-3 rounded-xl ${stat.bg}`}>
+                                <stat.icon className={`w-5 h-5 sm:w-6 sm:h-6 ${stat.color}`} />
                             </div>
                             <div>
-                                <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
-                                <h3 className="text-2xl font-bold">{stat.value}</h3>
+                                <p className="text-[10px] sm:text-xs text-muted-foreground font-bold uppercase tracking-wider">{stat.label}</p>
+                                <h3 className="text-2xl sm:text-3xl font-black">{stat.value}</h3>
                             </div>
                         </div>
                     </Card>

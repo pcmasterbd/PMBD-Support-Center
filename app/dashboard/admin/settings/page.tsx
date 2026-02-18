@@ -38,9 +38,9 @@ export default async function AdminSettingsPage() {
                 </div>
             </div>
 
-            <div className="grid lg:grid-cols-4 gap-8">
+            <div className="grid md-tab:grid-cols-4 gap-4 sm-std:gap-6 md:gap-8">
                 {/* Navigation Sidebar */}
-                <div className="lg:col-span-1 space-y-2">
+                <div className="md-tab:col-span-1 flex md-tab:flex-col gap-2 overflow-x-auto pb-2 md-tab:pb-0 customize-scrollbar">
                     <Button variant="secondary" className="w-full justify-start gap-3">
                         <Globe className="w-4 h-4" /> General
                     </Button>

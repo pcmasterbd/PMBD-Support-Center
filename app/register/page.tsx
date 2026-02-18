@@ -88,11 +88,11 @@ export default function RegisterPage() {
     if (step === 2) {
         return (
             <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-primary/5 via-blue-500/5 to-purple-500/5">
-                <Card className="w-full max-w-md p-8 text-center">
+                <Card className="w-full max-w-[400px] p-4 sm-std:p-6 md:p-8 text-center shadow-md mx-4 sm:mx-0">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/10 mb-6">
                         <Mail className="w-8 h-8 text-green-600" />
                     </div>
-                    <h1 className="text-3xl font-bold mb-4">ইমেইল ভেরিফাই করুন</h1>
+                    <h1 className="text-2xl sm-std:text-3xl font-bold mb-4">ইমেইল ভেরিফাই করুন</h1>
                     <p className="text-muted-foreground mb-8">
                         আমরা আপনার ইমেইল ঠিকানায় (<strong>{formData.email}</strong>) একটি ভেরিফিকেশন লিঙ্ক পাঠিয়েছি। অনুগ্রহ করে আপনার ইনবক্স চেক করুন এবং আপনার অ্যাকাউন্টটি সক্রিয় করুন।
                     </p>
@@ -117,37 +117,37 @@ export default function RegisterPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-primary/5 via-blue-500/5 to-purple-500/5">
-            <Card className="w-full max-w-xl p-8">
+        <div className="min-h-screen flex items-center justify-center px-3 sm-std:px-4 py-8 sm-std:py-12 bg-gradient-to-br from-primary/5 via-blue-500/5 to-purple-500/5">
+            <Card className="w-full max-w-xl p-4 sm-std:p-6 md:p-8">
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
                         <Shield className="w-8 h-8 text-primary" />
                     </div>
-                    <h1 className="text-3xl font-bold mb-2">রেজিস্ট্রেশন করুন</h1>
+                    <h1 className="text-2xl sm-std:text-3xl font-bold mb-2">রেজিস্ট্রেশন করুন</h1>
                     <p className="text-muted-foreground">
                         পেনড্রাইভের সিরিয়াল নম্বর দিয়ে রেজিস্ট্রেশন সম্পন্ন করুন
                     </p>
                 </div>
 
-                <div className="flex justify-between mb-8 px-4">
-                    <div className="flex flex-col items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">1</div>
-                        <span className="text-xs font-medium">তথ্য প্রদান</span>
+                <div className="flex justify-between mb-8 px-0 sm-std:px-4">
+                    <div className="flex flex-col items-center gap-1 sm-std:gap-2">
+                        <div className="w-6 h-6 sm-std:w-8 sm-std:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px] sm-std:text-sm font-bold">1</div>
+                        <span className="text-[10px] sm-std:text-xs font-medium">তথ্য প্রদান</span>
                     </div>
-                    <div className="flex-1 h-px bg-border mt-4 mx-2" />
-                    <div className="flex flex-col items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-bold">2</div>
-                        <span className="text-xs font-medium text-muted-foreground">সিরিয়াল যাচাই</span>
+                    <div className="flex-1 h-px bg-border mt-3 sm-std:mt-4 mx-1 sm-std:mx-2" />
+                    <div className="flex flex-col items-center gap-1 sm-std:gap-2">
+                        <div className="w-6 h-6 sm-std:w-8 sm-std:h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-[10px] sm-std:text-sm font-bold">2</div>
+                        <span className="text-[10px] sm-std:text-xs font-medium text-muted-foreground">সিরিয়াল যাচাই</span>
                     </div>
-                    <div className="flex-1 h-px bg-border mt-4 mx-2" />
-                    <div className="flex flex-col items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-bold">3</div>
-                        <span className="text-xs font-medium text-muted-foreground">ইমেইল ভেরিফাই</span>
+                    <div className="flex-1 h-px bg-border mt-3 sm-std:mt-4 mx-1 sm-std:mx-2" />
+                    <div className="flex flex-col items-center gap-1 sm-std:gap-2">
+                        <div className="w-6 h-6 sm-std:w-8 sm-std:h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-[10px] sm-std:text-sm font-bold">3</div>
+                        <span className="text-[10px] sm-std:text-xs font-medium text-muted-foreground">ইমেইল ভেরিফাই</span>
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4 col-span-2 md:col-span-1">
+                <form onSubmit={handleSubmit} className="grid grid-cols-1 sm-tab:grid-cols-2 gap-4 sm-std:gap-6">
+                    <div className="space-y-4 col-span-1">
                         <div className="space-y-2">
                             <Label htmlFor="name">পূর্ণ নাম</Label>
                             <Input
@@ -191,7 +191,7 @@ export default function RegisterPage() {
                         </div>
                     </div>
 
-                    <div className="space-y-4 col-span-2 md:col-span-1">
+                    <div className="space-y-4 col-span-1">
                         <div className="space-y-2">
                             <Label htmlFor="serialNumber">সিরিয়াল নম্বর</Label>
                             <Input
@@ -240,12 +240,12 @@ export default function RegisterPage() {
                     </div>
 
                     {error && (
-                        <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm col-span-2">
+                        <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm col-span-1 sm-tab:col-span-2">
                             {error}
                         </div>
                     )}
 
-                    <div className="col-span-2 pt-4">
+                    <div className="col-span-1 sm-tab:col-span-2 pt-4">
                         <Button type="submit" className="w-full" size="lg" disabled={loading}>
                             {loading ? (
                                 <>

@@ -36,13 +36,13 @@ export function VideoPlayer({ video, isOpen, onClose, relatedVideos = [], onSele
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="max-w-[95vw] lg:max-w-[1400px] p-0 gap-0 bg-zinc-950 border-zinc-800 shadow-2xl overflow-hidden block outline-none">
+            <DialogContent className="max-w-[100vw] sm:max-w-[95vw] lg:max-w-[1400px] p-0 gap-0 bg-zinc-950 border-zinc-800 shadow-2xl overflow-hidden block outline-none">
                 <DialogHeader className="sr-only">
                     <DialogTitle>{video.title}</DialogTitle>
                     <DialogDescription>{video.description}</DialogDescription>
                 </DialogHeader>
 
-                <div className="flex flex-col lg:flex-row h-[90vh] lg:h-[85vh]">
+                <div className="flex flex-col lg:flex-row h-[95vh] sm:h-[90vh] lg:h-[85vh]">
                     {/* Main Content (Video + Details) */}
                     <div className="flex-1 flex flex-col min-h-0 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-zinc-800 [&::-webkit-scrollbar-track]:bg-transparent">
 
@@ -60,13 +60,13 @@ export function VideoPlayer({ video, isOpen, onClose, relatedVideos = [], onSele
                         </div>
 
                         {/* Video Details */}
-                        <div className="p-6 lg:p-8 space-y-6">
+                        <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
                             <div className="space-y-4">
-                                <h1 className="text-xl lg:text-3xl font-bold text-zinc-100 leading-tight">
+                                <h1 className="text-lg sm:text-xl lg:text-3xl font-bold text-zinc-100 leading-tight">
                                     {video.title}
                                 </h1>
 
-                                <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-400 font-medium">
+                                <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-zinc-400 font-medium">
                                     <div className="flex items-center gap-1.5">
                                         <Eye className="w-4 h-4 text-zinc-500" />
                                         <span>{video.viewCount.toLocaleString()} views</span>
@@ -97,7 +97,7 @@ export function VideoPlayer({ video, isOpen, onClose, relatedVideos = [], onSele
                     </div>
 
                     {/* Sidebar (Related Videos) */}
-                    <div className="w-full lg:w-[400px] bg-zinc-900/50 border-t lg:border-t-0 lg:border-l border-white/5 flex flex-col lg:h-full">
+                    <div className="w-full lg:w-[350px] xl:w-[400px] bg-zinc-900/50 border-t lg:border-t-0 lg:border-l border-white/5 flex flex-col lg:h-full">
                         {/* Sidebar Header */}
                         <div className="p-4 lg:p-5 border-b border-white/5 flex items-center justify-between bg-zinc-900/80 backdrop-blur-md sticky top-0 z-10">
                             <h2 className="font-bold text-zinc-100 flex items-center gap-2 text-sm uppercase tracking-wide">
@@ -117,7 +117,7 @@ export function VideoPlayer({ video, isOpen, onClose, relatedVideos = [], onSele
                                     onClick={() => onSelectVideo?.(vid)}
                                     className="group flex gap-3 cursor-pointer hover:bg-white/5 p-2 rounded-xl transition-all duration-300 border border-transparent hover:border-white/5"
                                 >
-                                    <div className="relative w-36 aspect-video bg-black rounded-lg overflow-hidden shrink-0 shadow-lg">
+                                    <div className="relative w-28 sm:w-36 aspect-video bg-black rounded-lg overflow-hidden shrink-0 shadow-lg">
                                         <img
                                             src={vid.thumbnailUrl || `https://img.youtube.com/vi/${vid.youtubeId}/mqdefault.jpg`}
                                             alt={vid.title}
@@ -136,7 +136,7 @@ export function VideoPlayer({ video, isOpen, onClose, relatedVideos = [], onSele
                                         )}
                                     </div>
                                     <div className="flex flex-col gap-1 min-w-0 py-1">
-                                        <h3 className="text-sm font-bold text-zinc-300 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                                        <h3 className="text-xs sm:text-sm font-bold text-zinc-300 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
                                             {vid.title}
                                         </h3>
                                         <span className="text-xs text-zinc-500 font-medium flex items-center gap-1">

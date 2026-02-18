@@ -31,7 +31,7 @@ export default async function LicenseKeysPage() {
     return (
         <div className="space-y-8 pb-10">
             <div className="flex flex-col gap-1">
-                <h2 className="text-3xl font-extrabold tracking-tight">লাইসেন্স কী</h2>
+                <h2 className="text-2xl sm-std:text-3xl font-extrabold tracking-tight">লাইসেন্স কী</h2>
                 <p className="text-muted-foreground">
                     বিভিন্ন সফটওয়্যারের লাইসেন্স কী এবং এক্টিভেশন কোড
                 </p>
@@ -45,7 +45,7 @@ export default async function LicenseKeysPage() {
                                 <ShieldCheck className="w-5 h-5 text-primary" />
                                 {softwareName}
                             </h3>
-                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="grid sm-tab:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {licenses.map((license) => (
                                     <LicenseCard key={license.id} license={license} />
                                 ))}
@@ -54,9 +54,9 @@ export default async function LicenseKeysPage() {
                     ))}
                 </div>
             ) : (
-                <Card className="p-16 text-center border-2 border-dashed bg-muted/20 rounded-3xl">
-                    <Key className="w-16 h-16 mx-auto mb-4 text-muted/30" />
-                    <p className="text-muted-foreground font-bold uppercase tracking-widest text-sm">এখনও কোনো লাইসেন্স কী নেই</p>
+                <Card className="p-10 sm-std:p-16 text-center border-2 border-dashed bg-muted/20 rounded-3xl">
+                    <Key className="w-12 h-12 sm-std:w-16 sm-std:h-16 mx-auto mb-4 text-muted/30" />
+                    <p className="text-muted-foreground font-bold uppercase tracking-widest text-[10px] sm-std:text-sm">এখনও কোনো লাইসেন্স কী নেই</p>
                 </Card>
             )}
         </div>
@@ -79,9 +79,9 @@ function LicenseCard({ license }: { license: LicenseKey }) {
                         <CopyButton text={license.key} />
                     </div>
 
-                    <div className="p-4 rounded-xl bg-muted/30 border-2 border-dashed group-hover:border-primary/30 transition-colors">
+                    <div className="p-3 sm-std:p-4 rounded-xl bg-muted/30 border-2 border-dashed group-hover:border-primary/30 transition-colors">
                         <p className="text-[10px] text-muted-foreground mb-2 font-black uppercase tracking-widest opacity-70">License Key</p>
-                        <p className="font-mono text-xs font-bold break-all leading-relaxed bg-white/50 p-2 rounded border">{license.key}</p>
+                        <p className="font-mono text-[10px] sm-std:text-xs font-bold break-all leading-relaxed bg-white/50 p-2 rounded border">{license.key}</p>
                     </div>
 
                     <p className="text-[9px] text-muted-foreground mt-4 font-bold uppercase opacity-50">

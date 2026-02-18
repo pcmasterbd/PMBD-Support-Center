@@ -28,7 +28,7 @@ export default async function ActivityPage() {
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">অ্যাক্টিভিটি লগ</h2>
+                    <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">অ্যাক্টিভিটি লগ</h2>
                     <p className="text-muted-foreground">আপনার একাউন্টের সকল কার্যক্রমের ইতিহাস</p>
                 </div>
                 <div className="px-4 py-2 bg-muted rounded-full text-xs font-semibold">মোট ৫ট কার্যক্রম দেখাচ্ছে</div>
@@ -39,7 +39,7 @@ export default async function ActivityPage() {
                     {activities.length > 0 ? (
                         activities.map((activity) => (
                             <div key={activity.id} className="p-4 hover:bg-muted/30 transition-colors">
-                                <div className="flex items-start gap-4">
+                                <div className="flex items-start gap-3 sm:gap-4">
                                     <div className="mt-1 p-2 bg-background border rounded-lg shadow-sm">
                                         {getIcon(activity.action)}
                                     </div>
@@ -63,7 +63,7 @@ export default async function ActivityPage() {
                             </div>
                         ))
                     ) : (
-                        <div className="p-20 text-center flex flex-col items-center justify-center">
+                        <div className="p-10 sm:p-20 text-center flex flex-col items-center justify-center">
                             <Activity className="w-12 h-12 text-muted/30 mb-4" />
                             <h3 className="text-lg font-medium">কোনো রেকর্ড পাওয়া যায়নি</h3>
                             <p className="text-sm text-muted-foreground">আপনি যখন সাইটটি ব্যবহার করবেন তখন আপনার সকল কার্যক্রম এখানে দেখা যাবে।</p>

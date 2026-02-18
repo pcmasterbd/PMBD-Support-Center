@@ -54,7 +54,7 @@ export function TutorialList({ categories }: TutorialListProps) {
             {/* Simple & Elegant Hero Section */}
             {featuredVideo && (
                 <div
-                    className="relative w-full aspect-[21/9] md:aspect-[21/7] rounded-3xl overflow-hidden group cursor-pointer shadow-xl bg-zinc-950 border border-white/10"
+                    className="relative w-full aspect-[16/9] sm:aspect-[21/9] md:aspect-[21/7] rounded-2xl sm:rounded-3xl overflow-hidden group cursor-pointer shadow-xl bg-zinc-950 border border-white/10"
                     onClick={() => setSelectedVideo(featuredVideo)}
                 >
                     <img
@@ -64,7 +64,7 @@ export function TutorialList({ categories }: TutorialListProps) {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                    <div className="absolute inset-0 p-6 md:p-12 flex flex-col justify-end max-w-4xl space-y-4">
+                    <div className="absolute inset-0 p-4 sm:p-6 md:p-12 flex flex-col justify-end max-w-4xl space-y-2 sm:space-y-4">
                         <div className="flex items-center gap-2">
                             <div className="bg-primary/10 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-primary uppercase tracking-wider border border-primary/20 flex items-center gap-1.5">
                                 <Sparkles className="w-3 h-3" /> আজকেই বিশেষ
@@ -76,16 +76,16 @@ export function TutorialList({ categories }: TutorialListProps) {
                             )}
                         </div>
 
-                        <h2 className="text-2xl md:text-5xl font-bold text-white leading-tight tracking-tight">
+                        <h2 className="text-lg sm:text-2xl md:text-5xl font-bold text-white leading-tight tracking-tight line-clamp-2">
                             {featuredVideo.title}
                         </h2>
 
-                        <p className="text-zinc-300 text-sm md:text-lg line-clamp-2 max-w-2xl font-normal leading-relaxed">
+                        <p className="text-zinc-300 text-xs sm:text-sm md:text-lg line-clamp-2 max-w-2xl font-normal leading-relaxed hidden xs:block">
                             {featuredVideo.description}
                         </p>
 
                         <div className="flex items-center gap-4 pt-2">
-                            <button className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+                            <button className="flex items-center gap-1.5 sm:gap-2 bg-primary text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-bold text-xs sm:text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
                                 <Play className="w-4 h-4 fill-current" /> এখনই দেখুন
                             </button>
 
@@ -105,11 +105,11 @@ export function TutorialList({ categories }: TutorialListProps) {
             )}
 
             {/* Category Filter */}
-            <div className="flex items-center gap-2 p-1 bg-zinc-100 dark:bg-zinc-900 rounded-2xl w-fit max-w-full overflow-x-auto scrollbar-hide">
+            <div className="flex items-center gap-1.5 sm:gap-2 p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl sm:rounded-2xl w-fit max-w-full overflow-x-auto scrollbar-hide">
                 <button
                     onClick={() => setActiveCategory('all')}
                     className={cn(
-                        "flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap",
+                        "flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-semibold transition-all whitespace-nowrap",
                         activeCategory === 'all'
                             ? "bg-white dark:bg-zinc-800 text-primary shadow-sm ring-1 ring-black/5"
                             : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
@@ -122,7 +122,7 @@ export function TutorialList({ categories }: TutorialListProps) {
                         key={cat.id}
                         onClick={() => setActiveCategory(cat.id)}
                         className={cn(
-                            "flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap",
+                            "flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-semibold transition-all whitespace-nowrap",
                             activeCategory === cat.id
                                 ? "bg-white dark:bg-zinc-800 text-primary shadow-sm ring-1 ring-black/5"
                                 : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
@@ -149,7 +149,7 @@ export function TutorialList({ categories }: TutorialListProps) {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                             {category.videos.map((video: any) => (
                                 <div
                                     key={video.id}
@@ -204,7 +204,7 @@ export function TutorialList({ categories }: TutorialListProps) {
             </div>
 
             {categories.length === 0 && (
-                <div className="p-20 text-center bg-zinc-900/50 rounded-[3rem] border border-white/5 space-y-6">
+                <div className="p-10 sm:p-20 text-center bg-zinc-900/50 rounded-2xl sm:rounded-[3rem] border border-white/5 space-y-6">
                     <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto ring-1 ring-primary/20">
                         <Video className="w-12 h-12 text-primary" />
                     </div>

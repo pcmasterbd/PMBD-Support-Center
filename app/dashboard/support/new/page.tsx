@@ -68,7 +68,7 @@ export default function NewTicketPage() {
                 </div>
             </div>
 
-            <Card className="p-8">
+            <Card className="p-4 sm-std:p-6 md:p-8">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-2">
@@ -125,16 +125,16 @@ export default function NewTicketPage() {
                     )}
 
                     <div className="pt-4 flex justify-end">
-                        <Button type="submit" size="lg" disabled={loading} className="gap-2">
+                        <Button type="submit" size="lg" disabled={loading} className="w-full sm-std:w-auto gap-2">
                             {loading ? (
                                 <>
                                     <Loader2 className="w-4 h-4 animate-spin" />
-                                    প্রসেসিং হচ্ছে...
+                                    প্রসেসিং...
                                 </>
                             ) : (
                                 <>
                                     <Send className="w-4 h-4" />
-                                    টিকেট সাবমিট করুন
+                                    টিকেট সাবমিট
                                 </>
                             )}
                         </Button>

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { signOut } from '@/auth'
 import { LogOut } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { DashboardHeader } from '@/components/dashboard-header'
 
 export default async function DashboardLayout({
     children,
@@ -21,32 +22,18 @@ export default async function DashboardLayout({
         <div className="flex min-h-screen">
             <DashboardSidebar userRole={session.user.role} />
 
-            <div className="flex-1">
-                <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10">
-                    <div className="flex h-16 items-center justify-between px-6">
-                        <div>
-                            <h1 className="text-xl font-semibold">স্বাগতম, {session.user.name}</h1>
-                            <p className="text-sm text-muted-foreground">{session.user.email}</p>
-                        </div>
+            <div className="flex-1 min-w-0">
+                <DashboardHeader
+                    userName={session.user.name}
+                    userEmail={session.user.email}
+                    userRole={session.user.role}
+                    signOutAction={async () => {
+                        'use server'
+                        await signOut({ redirectTo: '/' })
+                    }}
+                />
 
-                        <div className="flex items-center gap-4">
-                            <ThemeToggle />
-                            <form
-                                action={async () => {
-                                    'use server'
-                                    await signOut({ redirectTo: '/' })
-                                }}
-                            >
-                                <Button variant="outline" size="sm" type="submit">
-                                    <LogOut className="w-4 h-4 mr-2" />
-                                    লগআউট
-                                </Button>
-                            </form>
-                        </div>
-                    </div>
-                </header>
-
-                <main className="p-6">
+                <main className="p-3 sm-std:p-4 md-tab:p-6">
                     {children}
                 </main>
             </div>

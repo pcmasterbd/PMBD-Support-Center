@@ -50,7 +50,7 @@ export default async function TicketDetailPage({ params: paramsPromise }: { para
                         </Button>
                     </Link>
                     <div>
-                        <h2 className="text-2xl font-bold tracking-tight">{ticket.subject}</h2>
+                        <h2 className="text-xl sm-std:text-2xl font-bold tracking-tight">{ticket.subject}</h2>
                         <div className="flex items-center gap-3 mt-1">
                             <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border-2 ${ticket.status === 'OPEN' ? 'border-blue-500/50 text-blue-500' :
                                 ticket.status === 'RESOLVED' ? 'border-green-500/50 text-green-500' : 'text-muted-foreground'
@@ -71,7 +71,7 @@ export default async function TicketDetailPage({ params: paramsPromise }: { para
                     const isUserAdmin = message.user.role === 'ADMIN' || message.user.role === 'SUPERADMIN';
                     return (
                         <div key={message.id} className={`flex ${isUserAdmin ? 'justify-start' : 'justify-end'}`}>
-                            <div className={`max-w-[85%] space-y-2`}>
+                            <div className={`max-w-[95%] sm-std:max-w-[85%] space-y-2`}>
                                 <div className={`flex items-center gap-2 mb-1 px-1 ${isUserAdmin ? 'justify-start' : 'justify-end text-right'}`}>
                                     {isUserAdmin && <Shield className="w-3 h-3 text-primary" />}
                                     {!isUserAdmin && <User className="w-3 h-3 text-muted-foreground" />}
@@ -80,7 +80,7 @@ export default async function TicketDetailPage({ params: paramsPromise }: { para
                                         {new Date(message.createdAt).toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' })}
                                     </span>
                                 </div>
-                                <Card className={`p-4 shadow-sm border-2 ${isUserAdmin
+                                <Card className={`p-3 sm-std:p-4 shadow-sm border-2 ${isUserAdmin
                                     ? 'bg-primary/5 border-primary/10 rounded-tl-none'
                                     : 'bg-muted/30 border-muted rounded-tr-none'
                                     }`}>
@@ -103,10 +103,10 @@ export default async function TicketDetailPage({ params: paramsPromise }: { para
                     <TicketReplyForm ticketId={ticket.id} />
                 </div>
             ) : (
-                <Card className="p-10 border-dashed text-center flex flex-col items-center">
-                    <CheckCircle className="w-10 h-10 text-green-500 mb-4" />
-                    <h3 className="text-lg font-bold">এই টিকেটটি বন্ধ করা হয়েছে</h3>
-                    <p className="text-sm text-muted-foreground">সমস্যাটি সমাধান হওয়ায় টিকেটটি ক্লোজ করা হয়েছে। আপনার আরও সাহায্যের প্রয়োজন হলে নতুন টিকেট ওপেন করুন।</p>
+                <Card className="p-4 sm-std:p-6 border-dashed text-center flex flex-col items-center">
+                    <CheckCircle className="w-8 h-8 sm-std:w-10 sm-std:h-10 text-green-500 mb-4" />
+                    <h3 className="text-base sm-std:text-lg font-bold">এই টিকেটটি বন্ধ করা হয়েছে</h3>
+                    <p className="text-xs sm-std:text-sm text-muted-foreground">সমস্যাটি সমাধান হওয়ায় টিকেটটি ক্লোজ করা হয়েছে। আপনার আরও সাহায্যের প্রয়োজন হলে নতুন টিকেট ওপেন করুন।</p>
                 </Card>
             )}
         </div>

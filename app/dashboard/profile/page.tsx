@@ -18,13 +18,13 @@ export default async function ProfilePage() {
     return (
         <div className="space-y-8 max-w-4xl">
             <div>
-                <h2 className="text-3xl font-bold tracking-tight">আপনার প্রোফাইল</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">আপনার প্রোফাইল</h2>
                 <p className="text-muted-foreground">আপনার একাউন্ট তথ্য এবং নিরাপত্তা সেটিংস</p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md-tab:grid-cols-2 gap-4 sm-std:gap-6">
                 {/* Basic Info */}
-                <Card className="p-6">
+                <Card className="p-4 sm:p-6">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-primary/10 rounded-lg">
                             <User className="w-5 h-5 text-primary" />
@@ -52,7 +52,7 @@ export default async function ProfilePage() {
                 </Card>
 
                 {/* Product Info */}
-                <Card className="p-6">
+                <Card className="p-4 sm:p-6">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-blue-500/10 rounded-lg">
                             <Shield className="w-5 h-5 text-blue-500" />
@@ -76,7 +76,7 @@ export default async function ProfilePage() {
                 </Card>
 
                 {/* Security Settings */}
-                <Card className="p-6 md:col-span-2">
+                <Card className="p-4 sm-std:p-6 md-tab:col-span-2">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-red-500/10 rounded-lg">
                             <Lock className="w-5 h-5 text-red-500" />
@@ -93,7 +93,7 @@ export default async function ProfilePage() {
                             </div>
                         </div>
 
-                        <div className="space-y-4 border-l pl-8">
+                        <div className="space-y-4 border-t md-tab:border-t-0 md-tab:border-l pt-6 md-tab:pt-0 md-tab:pl-8">
                             <div className="flex items-center justify-between p-3 rounded-lg border bg-muted/30">
                                 <div className="flex items-center gap-3">
                                     <Mail className="w-4 h-4 text-muted-foreground" />
