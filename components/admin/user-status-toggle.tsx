@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 interface UserStatusToggleProps {
     userId: string
@@ -28,9 +29,10 @@ export function UserStatusToggle({ userId, initialStatus }: UserStatusToggleProp
             }
 
             setIsActive(checked)
+            toast.success('User status updated successfully')
             router.refresh()
         } catch (error) {
-            alert('Failed to update user status')
+            toast.error('Failed to update user status')
             setIsActive(!checked) // Revert state on error
         } finally {
             setLoading(false)

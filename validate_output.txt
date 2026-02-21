@@ -1,0 +1,17 @@
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+
+Error: Prisma schema validation - (validate wasm)
+Error code: P1012
+[1;91merror[0m: [1mError validating field `ticket` in model `TicketFeedback`: The relation field `ticket` on model `TicketFeedback` is missing an opposite relation field on the model `SupportTicket`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:387[0m
+[1;94m   | [0m
+[1;94m386 | [0m  ticketId String        @unique
+[1;94m387 | [0m  [1;91mticket   SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)[0m
+[1;94m388 | [0m
+[1;94m   | [0m
+
+Validation Error Count: 1
+[Context: validate]
+
+Prisma CLI Version : 6.19.2

@@ -36,10 +36,10 @@ export async function POST(
         }
 
         const body = await req.json()
-        const { message } = body
+        const { message, attachmentUrl } = body
 
-        if (!message) {
-            return NextResponse.json({ error: 'Missing message' }, { status: 400 })
+        if (!message && !attachmentUrl) {
+            return NextResponse.json({ error: 'Missing message or attachment' }, { status: 400 })
         }
 
         // Create message and update ticket timestamp in a transaction
@@ -48,7 +48,8 @@ export async function POST(
                 data: {
                     ticketId: id,
                     userId: session.user.id,
-                    message,
+                    message: message || '',
+                    attachmentUrl: attachmentUrl || null,
                 }
             })
 

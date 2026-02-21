@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { TutorialList } from '@/components/tutorial-list'
+import { TutorialsClient } from './tutorials-client'
 
 export default async function TutorialsPage() {
     const categories = await prisma.category.findMany({
@@ -12,16 +12,15 @@ export default async function TutorialsPage() {
         orderBy: { displayOrder: 'asc' },
     })
 
-    return (
-        <div className="space-y-6 pb-10">
-            <div className="flex flex-col gap-1">
-                <h2 className="text-3xl font-extrabold tracking-tight">ভিডিও টিউটোরিয়াল</h2>
-                <p className="text-muted-foreground">
-                    বাংলায় সম্পূর্ণ গাইড - Windows, Linux এবং আরও অনেক কিছু
-                </p>
-            </div>
+    const serialized = categories.map(cat => ({
+        ...cat,
+        createdAt: cat.createdAt.toISOString(),
+        videos: cat.videos.map(v => ({
+            ...v,
+            createdAt: v.createdAt.toISOString(),
+            updatedAt: v.updatedAt.toISOString(),
+        })),
+    }))
 
-            <TutorialList categories={categories} />
-        </div>
-    )
+    return <TutorialsClient categories={serialized} />
 }

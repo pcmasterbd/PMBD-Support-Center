@@ -1,0 +1,32 @@
+
+> temp_app@0.1.0 build
+> npx prisma generate && next build
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+
+✔ Generated Prisma Client (v6.19.2) to .\node_modules\@prisma\client in 241ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 15.3s
+  Running TypeScript ...
+Failed to compile.
+
+./app/dashboard/software/page.tsx:21:24
+Type error: Property 'updatedAt' does not exist on type '{ software: { id: string; name: string; createdAt: Date; updatedAt: Date; description: string | null; isPremium: boolean; categoryId: string; version: string | null; fileUrl: string; fileSize: bigint | null; iconUrl: string | null; downloadCount: number; checksum: string | null; }[]; } & { ...; }'.
+
+[0m [90m 19 |[39m         [33m...[39mcat[33m,[39m
+ [90m 20 |[39m         createdAt[33m:[39m cat[33m.[39mcreatedAt[33m.[39mtoISOString()[33m,[39m
+[31m[1m>[22m[39m[90m 21 |[39m         updatedAt[33m:[39m cat[33m.[39mupdatedAt[33m.[39mtoISOString()[33m,[39m
+ [90m    |[39m                        [31m[1m^[22m[39m
+ [90m 22 |[39m         software[33m:[39m cat[33m.[39msoftware[33m.[39mmap(sw [33m=>[39m ({
+ [90m 23 |[39m             [33m...[39msw[33m,[39m
+ [90m 24 |[39m             fileSize[33m:[39m sw[33m.[39mfileSize [33m?[39m [33mNumber[39m(sw[33m.[39mfileSize) [33m:[39m [36mnull[39m[33m,[39m[0m
+Next.js build worker exited with code: 1 and signal: null

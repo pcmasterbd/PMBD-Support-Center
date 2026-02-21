@@ -1,0 +1,34 @@
+
+> temp_app@0.1.0 build
+> npx prisma generate && next build
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+
+✔ Generated Prisma Client (v6.19.2) to .\node_modules\@prisma\client in 207ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 16.0s
+  Running TypeScript ...
+Failed to compile.
+
+./lib/actions/superadmin/admin-actions.ts:64:13
+Type error: Type '{ name: string; email: string; passwordHash: string; role: string; isActive: true; emailVerified: Date; }' is not assignable to type '(Without<UserCreateInput, UserUncheckedCreateInput> & UserUncheckedCreateInput) | (Without<...> & UserCreateInput)'.
+  Type '{ name: string; email: string; passwordHash: string; role: string; isActive: true; emailVerified: Date; }' is not assignable to type 'Without<UserUncheckedCreateInput, UserCreateInput> & UserCreateInput'.
+    Property 'phone' is missing in type '{ name: string; email: string; passwordHash: string; role: string; isActive: true; emailVerified: Date; }' but required in type 'UserCreateInput'.
+
+[0m [90m 62 |[39m
+ [90m 63 |[39m         [36mawait[39m prisma[33m.[39muser[33m.[39mcreate({
+[31m[1m>[22m[39m[90m 64 |[39m             data[33m:[39m {
+ [90m    |[39m             [31m[1m^[22m[39m
+ [90m 65 |[39m                 name[33m,[39m
+ [90m 66 |[39m                 email[33m,[39m
+ [90m 67 |[39m                 passwordHash[33m:[39m hashedPassword[33m,[39m[0m
+Next.js build worker exited with code: 1 and signal: null

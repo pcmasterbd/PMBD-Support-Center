@@ -45,3 +45,23 @@ export async function revokeSerial(id: string) {
     })
     revalidatePath('/dashboard/admin/serials')
 }
+
+export async function bulkImportSerialNumbers(data: { code: string, packageType?: string }[]) {
+    if (!data || data.length === 0) return { success: false, error: "No data provided" }
+
+    try {
+        await prisma.serialNumber.createMany({
+            data: data.map(item => ({
+                code: item.code,
+                packageType: item.packageType || 'STANDARD_64GB',
+                status: 'AVAILABLE'
+            })),
+            skipDuplicates: true
+        })
+        revalidatePath('/dashboard/admin/serials')
+        return { success: true, count: data.length }
+    } catch (error) {
+        console.error("Bulk import error:", error)
+        return { success: false, error: "Failed to import serials" }
+    }
+}

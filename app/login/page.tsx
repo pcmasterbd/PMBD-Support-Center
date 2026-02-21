@@ -10,6 +10,9 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { LogIn, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
+import { useLanguage } from '@/lib/language-context'
+import { LanguageToggle } from '@/components/language-toggle'
+import { toast } from 'sonner'
 
 function LoginForm() {
     const router = useRouter()
@@ -18,6 +21,7 @@ function LoginForm() {
     const [error, setError] = useState('')
     const [showSuccess, setShowSuccess] = useState(false)
     const [isVerified, setIsVerified] = useState(false)
+    const { t } = useLanguage()
     const [formData, setFormData] = useState({
         identifier: '',
         password: '',
@@ -52,32 +56,38 @@ function LoginForm() {
             })
 
             if (result?.error) {
-                if (result.error === "CredentialsSignin") {
-                    setError('ইউজারনেম বা পাসওয়ার্ড ভুল')
-                } else {
-                    setError(result.error)
-                }
+                const errorMessage = result.error === "CredentialsSignin"
+                    ? 'ইউজারনেম বা পাসওয়ার্ড ভুল'
+                    : result.error;
+                setError(errorMessage)
+                toast.error(errorMessage)
                 setLoading(false)
                 return
             }
 
+            toast.success('লগইন সফল হয়েছে!')
             router.push('/dashboard')
             router.refresh()
         } catch (err) {
-            setError('লগইন করতে সমস্যা হয়েছে')
+            const errorMessage = 'লগইন করতে সমস্যা হয়েছে';
+            setError(errorMessage)
+            toast.error(errorMessage)
             setLoading(false)
         }
     }
 
     return (
         <Card className="w-full max-w-md p-5 sm-std:p-6 md:p-8">
+            <div className="flex justify-end mb-4">
+                <LanguageToggle />
+            </div>
             <div className="text-center mb-8">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
                     <LogIn className="w-8 h-8 text-primary" />
                 </div>
-                <h1 className="text-3xl font-bold mb-2">লগইন করুন</h1>
+                <h1 className="text-3xl font-bold mb-2">{t('login.title')}</h1>
                 <p className="text-muted-foreground">
-                    ইমেইল, ফোন অথবা সিরিয়াল নম্বর দিয়ে লগইন করুন
+                    {t('login.subtitle')}
                 </p>
             </div>
 
@@ -91,18 +101,18 @@ function LoginForm() {
             {isVerified && (
                 <div className="mb-6 p-4 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 flex items-center gap-2">
                     <CheckCircle2 className="w-5 h-5" />
-                    <span>ইমেইল সফলভাবে ভেরিফাই হয়েছে! এখন লগইন করুন</span>
+                    <span>ইমেইল সফলভাবে ভেরিফাই হয়েছে! এখন লগইন করুন</span>
                 </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                    <Label htmlFor="identifier">ইমেইল / ফোন / সিরিয়াল</Label>
+                    <Label htmlFor="identifier">{t('login.email')}</Label>
                     <Input
                         id="identifier"
                         name="identifier"
                         type="text"
-                        placeholder="Email, Phone or Serial"
+                        placeholder={t('login.emailPlaceholder')}
                         value={formData.identifier}
                         onChange={handleChange}
                         required
@@ -112,16 +122,13 @@ function LoginForm() {
 
                 <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                        <Label htmlFor="password">পাসওয়ার্ড</Label>
-                        <Link href="/auth/forgot-password" title="যাচাই করুন" className="text-xs text-primary hover:underline">
-                            পাসওয়ার্ড ভুলে গেছেন?
-                        </Link>
+                        <Label htmlFor="password">{t('login.password')}</Label>
                     </div>
                     <Input
                         id="password"
                         name="password"
                         type="password"
-                        placeholder="••••••••"
+                        placeholder={t('login.passwordPlaceholder')}
                         value={formData.password}
                         onChange={handleChange}
                         required
@@ -140,27 +147,23 @@ function LoginForm() {
                     {loading ? (
                         <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            লগইন হচ্ছে...
+                            {t('login.loggingIn')}
                         </>
                     ) : (
                         <>
                             <LogIn className="mr-2 h-4 w-4" />
-                            লগইন করুন
+                            {t('login.loginButton')}
                         </>
                     )}
                 </Button>
             </form>
 
-            <div className="mt-6 text-center text-sm">
-                <span className="text-muted-foreground">নতুন ব্যবহারকারী? </span>
-                <Link href="/register" className="text-primary hover:underline font-medium">
-                    রেজিস্ট্রেশন করুন
-                </Link>
-            </div>
-
-            <div className="mt-4 text-center">
-                <Link href="/" className="text-sm text-muted-foreground hover:text-primary">
-                    হোম পেজে ফিরে যান
+            <div className="mt-8 pt-6 border-t text-center">
+                <p className="text-sm text-muted-foreground mb-4 px-2">
+                    {t('login.adminNote')}
+                </p>
+                <Link href="/" className="text-sm font-medium text-primary hover:underline">
+                    {t('login.backToHome')}
                 </Link>
             </div>
         </Card>

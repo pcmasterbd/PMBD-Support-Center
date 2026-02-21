@@ -16,29 +16,31 @@ model User {
   phone         String    @unique
   phoneVerified DateTime?
   passwordHash  String
-  
-  serialId      String?   @unique
-  serialNumber  SerialNumber? @relation(fields: [serialId], references: [id])
-  
-  role          String    @default("USER") // USER, ADMIN, SUPERADMIN
-  isActive      Boolean   @default(true)
-  avatarUrl     String?
-  adminNotes    String?
+
+  serialId     String?       @unique
+  serialNumber SerialNumber? @relation(fields: [serialId], references: [id])
+
+  role       String  @default("USER") // USER, ADMIN, SUPERADMIN
+  isActive   Boolean @default(true)
+  avatarUrl  String?
+  adminNotes String?
 
   twoFactorEnabled Boolean @default(false)
   twoFactorSecret  String?
-  
-  activities    UserActivity[]
-  notifications Notification[]
-  downloads     UserDownload[]
-  tickets       SupportTicket[]
-  ticketMessages TicketMessage[]
-  favorites     UserFavorite[]
+
+  activities      UserActivity[]
+  notifications   Notification[]
+  downloads       UserDownload[]
+  tickets         SupportTicket[]
+  ticketMessages  TicketMessage[]
+  favorites       UserFavorite[]
   accountRequests AccountRequest[]
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  lastLogin     DateTime?
+  messageReactions TicketMessageReaction[]
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  lastLogin      DateTime?
+  adminAuditLogs AdminAuditLog[]
 
   @@map("users")
 }
@@ -74,78 +76,92 @@ model TwoFactorToken {
 }
 
 model SerialNumber {
-  id          String    @id @default(cuid())
-  code        String    @unique // Format: PCMBD-YYYY-XXXX-YYYY
-  status      String    @default("AVAILABLE") // AVAILABLE, ASSIGNED, BLOCKED
-  batch       String?
-  
-  user        User?
-  
+  id     String  @id @default(cuid())
+  code   String  @unique // Format: PCMBD-YYYY-XXXX-YYYY
+  status String  @default("AVAILABLE") // AVAILABLE, ASSIGNED, BLOCKED
+  batch  String?
+
+  user User?
+
   assignedAt  DateTime?
   expiresAt   DateTime?
+  packageType String? // PREMIUM_128GB, STANDARD_64GB
   createdAt   DateTime  @default(now())
 
   @@map("serial_numbers")
 }
 
+model AdminAuditLog {
+  id        String   @id @default(cuid())
+  adminId   String
+  admin     User     @relation(fields: [adminId], references: [id])
+  action    String
+  target    String?
+  details   String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  @@map("admin_audit_logs")
+}
+
 // Content Management
 model Category {
-  id            String    @id @default(cuid())
-  name          String
-  type          String    // VIDEO, SOFTWARE
-  icon          String?
-  displayOrder  Int       @default(0)
-  
-  videos        VideoTutorial[]
-  software      Software[]
-  
-  createdAt     DateTime  @default(now())
+  id           String  @id @default(cuid())
+  name         String
+  type         String // VIDEO, SOFTWARE
+  icon         String?
+  displayOrder Int     @default(0)
+
+  videos   VideoTutorial[]
+  software Software[]
+
+  createdAt DateTime @default(now())
 
   @@map("categories")
 }
 
 model VideoTutorial {
-  id            String    @id @default(cuid())
-  title         String
-  description   String?
-  youtubeId     String
-  categoryId    String
-  category      Category  @relation(fields: [categoryId], references: [id])
-  
-  thumbnailUrl  String?
-  duration      Int?      // in seconds
-  viewCount     Int       @default(0)
-  isPremium     Boolean   @default(false)
-  displayOrder  Int       @default(0)
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  youtubeId   String
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
 
-  favorites     UserFavorite[] @relation("VideoFavorites")
+  thumbnailUrl String?
+  duration     Int? // in seconds
+  viewCount    Int     @default(0)
+  isPremium    Boolean @default(false)
+  displayOrder Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  favorites UserFavorite[] @relation("VideoFavorites")
 
   @@map("video_tutorials")
 }
 
 model Software {
-  id            String    @id @default(cuid())
-  name          String
-  version       String?
-  description   String?
-  categoryId    String
-  category      Category  @relation(fields: [categoryId], references: [id])
-  
+  id          String   @id @default(cuid())
+  name        String
+  version     String?
+  description String?
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+
   fileUrl       String
   fileSize      BigInt?
   iconUrl       String?
-  isPremium     Boolean   @default(false)
-  downloadCount Int       @default(0)
-  
-  downloads     UserDownload[]
-  mirrors       SoftwareMirror[]
-  checksum      String?
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  isPremium     Boolean @default(false)
+  downloadCount Int     @default(0)
+
+  downloads UserDownload[]
+  mirrors   SoftwareMirror[]
+  checksum  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("software")
 }
@@ -161,158 +177,174 @@ model SoftwareMirror {
 
 // Premium Resources
 model PremiumAccount {
-  id            String    @id @default(cuid())
-  serviceName   String
-  type          String    // SHARED, PRIVATE
-  username      String
-  password      String
-  notes         String?
-  
-  maxUsers      Int       @default(1)
-  status        String    @default("ACTIVE")
-  expiresAt     DateTime?
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id          String  @id @default(cuid())
+  serviceName String
+  type        String // SHARED, PRIVATE
+  username    String
+  password    String
+  notes       String?
+
+  maxUsers  Int       @default(1)
+  status    String    @default("ACTIVE")
+  expiresAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("premium_accounts")
 }
 
 model LicenseKey {
-  id            String    @id @default(cuid())
-  softwareName  String
-  key           String
-  status        String    @default("AVAILABLE") // AVAILABLE, ASSIGNED
-  
+  id           String @id @default(cuid())
+  softwareName String
+  key          String
+  status       String @default("AVAILABLE") // AVAILABLE, ASSIGNED
+
   // Could be assigned to a specific user optionally
-  assignedToUser String?  
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  assignedToUser String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("license_keys")
 }
 
 model AccountRequest {
-  id            String    @id @default(cuid())
-  userId        String
-  user          User      @relation(fields: [userId], references: [id])
-  
-  resourceType  String    // PREMIUM_ACCOUNT, LICENSE_KEY
-  resourceName  String    // e.g. "Windows 11 Pro", "Adobe Creative Cloud"
-  reason        String?
-  status        String    @default("PENDING") // PENDING, APPROVED, REJECTED
-  adminNotes    String?
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  resourceType String // PREMIUM_ACCOUNT, LICENSE_KEY
+  resourceName String // e.g. "Windows 11 Pro", "Adobe Creative Cloud"
+  reason       String?
+  status       String  @default("PENDING") // PENDING, APPROVED, REJECTED
+  adminNotes   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("account_requests")
 }
 
 // Activities & Logging
 model UserDownload {
-  id            String    @id @default(cuid())
-  userId        String
-  user          User      @relation(fields: [userId], references: [id])
-  softwareId    String
-  software      Software  @relation(fields: [softwareId], references: [id])
-  
-  downloadedAt  DateTime  @default(now())
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  softwareId String
+  software   Software @relation(fields: [softwareId], references: [id])
+
+  downloadedAt DateTime @default(now())
 
   @@map("user_downloads")
 }
 
 model UserActivity {
-  id            String    @id @default(cuid())
-  userId        String
-  user          User      @relation(fields: [userId], references: [id])
-  action        String    // LOGIN, DOWNLOAD, WATCH
-  details       String?
-  ipAddress     String?
-  
-  createdAt     DateTime  @default(now())
+  id        String  @id @default(cuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+  action    String // LOGIN, DOWNLOAD, WATCH
+  details   String?
+  ipAddress String?
+
+  createdAt DateTime @default(now())
 
   @@map("user_activities")
 }
 
 model Notification {
-  id            String    @id @default(cuid())
-  userId        String
-  user          User      @relation(fields: [userId], references: [id])
-  title         String
-  message       String
-  type          String    // INFO, SUCCESS, WARNING
-  isRead        Boolean   @default(false)
-  
-  createdAt     DateTime  @default(now())
+  id      String  @id @default(cuid())
+  userId  String
+  user    User    @relation(fields: [userId], references: [id])
+  title   String
+  message String
+  type    String // INFO, SUCCESS, WARNING
+  isRead  Boolean @default(false)
+
+  createdAt DateTime @default(now())
 
   @@map("notifications")
 }
 
 model SupportTicket {
-  id            String    @id @default(cuid())
-  userId        String
-  user          User      @relation(fields: [userId], references: [id])
-  subject       String
-  status        String    @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED, CLOSED
-  priority      String    @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
-  
-  messages      TicketMessage[]
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+  subject  String
+  status   String @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED, CLOSED
+  priority String @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+
+  messages TicketMessage[]
+  feedback TicketFeedback?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("support_tickets")
 }
 
 model TicketMessage {
-  id            String    @id @default(cuid())
-  ticketId      String
-  ticket        SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-  userId        String
-  user          User      @relation(fields: [userId], references: [id])
-  
+  id       String        @id @default(cuid())
+  ticketId String
+  ticket   SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User          @relation(fields: [userId], references: [id])
+
   message       String
   attachmentUrl String?
-  
-  createdAt     DateTime  @default(now())
+  reactions     TicketMessageReaction[]
+
+  createdAt DateTime @default(now())
 
   @@map("ticket_messages")
 }
 
+model TicketMessageReaction {
+  id        String        @id @default(cuid())
+  messageId String
+  message   TicketMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emoji     String
+
+  createdAt DateTime @default(now())
+
+  @@unique([messageId, userId])
+  @@map("ticket_message_reactions")
+}
+
 model UserFavorite {
-  id            String    @id @default(cuid())
-  userId        String
-  user          User      @relation(fields: [userId], references: [id])
-  
-  videoId       String?
-  video         VideoTutorial? @relation("VideoFavorites", fields: [videoId], references: [id])
-  
-  resourceId    String? // Generic ID for other types
-  type          String // VIDEO, SOFTWARE, PREMIUM_ACCOUNT
-  
-  createdAt     DateTime  @default(now())
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  videoId String?
+  video   VideoTutorial? @relation("VideoFavorites", fields: [videoId], references: [id])
+
+  resourceId String? // Generic ID for other types
+  type       String // VIDEO, SOFTWARE, PREMIUM_ACCOUNT
+
+  createdAt DateTime @default(now())
 
   @@index([userId])
   @@map("user_favorites")
 }
 
 model SystemSetting {
-  id          String   @id @default(cuid())
-  key         String   @unique
+  id          String  @id @default(cuid())
+  key         String  @unique
   value       String
-  category    String   @default("GENERAL") // GENERAL, SMTP, SMS, SECURITY
+  category    String  @default("GENERAL") // GENERAL, SMTP, SMS, SECURITY
   description String?
-  
-  updatedAt   DateTime @updatedAt
+
+  updatedAt DateTime @updatedAt
 
   @@map("system_settings")
 }
 
 model QuickReply {
   id        String   @id @default(cuid())
-  category  String   // e.g., "BIOS", "Serial", "General"
+  category  String // e.g., "BIOS", "Serial", "General"
   message   String
   createdAt DateTime @default(now())
 
@@ -320,19 +352,61 @@ model QuickReply {
 }
 
 model Customer {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   name      String
-  phone     String   // "Namber"
+  phone     String // "Namber"
   address   String?
   package   String?
-  price     Float?   // "Package/ Price"
-  totalBill Float?   // "Total TK"
-  
+  price     Float? // "Package/ Price"
+  totalBill Float? // "Total TK"
+
   pendrivePurchaseDate DateTime?
   pendriveSN           String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@map("customers")
+}
+
+model FAQ {
+  id           String  @id @default(cuid())
+  question     String
+  answer       String  @db.Text
+  category     String // GENERAL, TECHNICAL, BILLING
+  tags         String? // Comma separated tags
+  isPublished  Boolean @default(true)
+  displayOrder Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("faqs")
+}
+
+model Announcement {
+  id        String    @id @default(cuid())
+  title     String
+  message   String    @db.Text
+  type      String // INFO, WARNING, UPDATE
+  isActive  Boolean   @default(true)
+  expiresAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("announcements")
+}
+
+model TicketFeedback {
+  id       String        @id @default(cuid())
+  ticketId String        @unique
+  ticket   SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  rating  Int // 1-5
+  comment String? @db.Text
+
+  createdAt DateTime @default(now())
+
+  @@map("ticket_feedback")
 }

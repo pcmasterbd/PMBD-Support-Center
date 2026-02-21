@@ -13,6 +13,13 @@ export const authConfig = {
 
             if (isOnDashboard) {
                 if (isLoggedIn) {
+                    const isSuperAdminRoute = nextUrl.pathname.startsWith('/dashboard/superadmin')
+                    const isSuperAdmin = auth?.user?.role === 'SUPERADMIN'
+
+                    if (isSuperAdminRoute && !isSuperAdmin) {
+                        return Response.redirect(new URL('/dashboard', nextUrl.toString()))
+                    }
+
                     // Force admin to landing on admin dashboard if they hit the base /dashboard
                     if (nextUrl.pathname === '/dashboard' && isAdmin) {
                         return Response.redirect(new URL('/dashboard/admin', nextUrl.toString()))
@@ -28,10 +35,11 @@ export const authConfig = {
             }
             return true
         },
-        async jwt({ token, user, trigger, session }) {
+        async jwt({ token, user }) {
             if (user) {
                 token.id = user.id
                 token.role = user.role
+                token.avatarUrl = (user as any).avatarUrl
             }
             return token
         },
@@ -39,6 +47,7 @@ export const authConfig = {
             if (token && session.user) {
                 session.user.id = token.id as string
                 session.user.role = token.role as string
+                session.user.avatarUrl = token.avatarUrl as string | null
             }
             return session
         },

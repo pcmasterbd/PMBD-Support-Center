@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -8,11 +8,19 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Shield, ArrowRight, Loader2, Mail, CheckCircle2 } from 'lucide-react'
+import { useLanguage } from '@/lib/language-context'
+import { LanguageToggle } from '@/components/language-toggle'
 
 export default function RegisterPage() {
     const router = useRouter()
+    const { t } = useLanguage()
     const [step, setStep] = useState(1) // 1: Form, 2: Verification Message
     const [loading, setLoading] = useState(false)
+    const [verifying, setVerifying] = useState(false)
+
+    useEffect(() => {
+        router.push('/login')
+    }, [router])
     const [error, setError] = useState('')
     const [formData, setFormData] = useState({
         name: '',
@@ -76,7 +84,7 @@ export default function RegisterPage() {
             if (result.error) {
                 alert(result.error)
             } else {
-                alert('ইমেইল পাঠানো হয়েছে! চেক করুন। (স্প্যাম ফোল্ডার চেক করতে ভুলবেন না)')
+                alert('ইমেইল পাঠানো হয়েছে! চেক করুন। (স্প্যাম ফোল্ডার চেক করতে ভুলবেন না)')
             }
         } catch (error) {
             alert('Something went wrong!')
@@ -94,7 +102,7 @@ export default function RegisterPage() {
                     </div>
                     <h1 className="text-2xl sm-std:text-3xl font-bold mb-4">ইমেইল ভেরিফাই করুন</h1>
                     <p className="text-muted-foreground mb-8">
-                        আমরা আপনার ইমেইল ঠিকানায় (<strong>{formData.email}</strong>) একটি ভেরিফিকেশন লিঙ্ক পাঠিয়েছি। অনুগ্রহ করে আপনার ইনবক্স চেক করুন এবং আপনার অ্যাকাউন্টটি সক্রিয় করুন।
+                        আমরা আপনার ইমেইল ঠিকানায় (<strong>{formData.email}</strong>) একটি ভেরিফিকেশন লিঙ্ক পাঠিয়েছি। অনুগ্রহ করে আপনার ইনবক্স চেক করুন এবং আপনার অ্যাকাউন্টটি সক্রিয় করুন।
                     </p>
                     <div className="space-y-4">
                         <Button variant="outline" className="w-full" onClick={() => setStep(1)} disabled={loading}>
@@ -119,42 +127,45 @@ export default function RegisterPage() {
     return (
         <div className="min-h-screen flex items-center justify-center px-3 sm-std:px-4 py-8 sm-std:py-12 bg-gradient-to-br from-primary/5 via-blue-500/5 to-purple-500/5">
             <Card className="w-full max-w-xl p-4 sm-std:p-6 md:p-8">
+                <div className="flex justify-end mb-4">
+                    <LanguageToggle />
+                </div>
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
                         <Shield className="w-8 h-8 text-primary" />
                     </div>
-                    <h1 className="text-2xl sm-std:text-3xl font-bold mb-2">রেজিস্ট্রেশন করুন</h1>
+                    <h1 className="text-2xl sm-std:text-3xl font-bold mb-2">{t('register.title')}</h1>
                     <p className="text-muted-foreground">
-                        পেনড্রাইভের সিরিয়াল নম্বর দিয়ে রেজিস্ট্রেশন সম্পন্ন করুন
+                        {t('register.subtitle')}
                     </p>
                 </div>
 
                 <div className="flex justify-between mb-8 px-0 sm-std:px-4">
                     <div className="flex flex-col items-center gap-1 sm-std:gap-2">
                         <div className="w-6 h-6 sm-std:w-8 sm-std:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px] sm-std:text-sm font-bold">1</div>
-                        <span className="text-[10px] sm-std:text-xs font-medium">তথ্য প্রদান</span>
+                        <span className="text-[10px] sm-std:text-xs font-medium">{t('register.step2')}</span>
                     </div>
                     <div className="flex-1 h-px bg-border mt-3 sm-std:mt-4 mx-1 sm-std:mx-2" />
                     <div className="flex flex-col items-center gap-1 sm-std:gap-2">
                         <div className="w-6 h-6 sm-std:w-8 sm-std:h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-[10px] sm-std:text-sm font-bold">2</div>
-                        <span className="text-[10px] sm-std:text-xs font-medium text-muted-foreground">সিরিয়াল যাচাই</span>
+                        <span className="text-[10px] sm-std:text-xs font-medium text-muted-foreground">{t('register.step1')}</span>
                     </div>
                     <div className="flex-1 h-px bg-border mt-3 sm-std:mt-4 mx-1 sm-std:mx-2" />
                     <div className="flex flex-col items-center gap-1 sm-std:gap-2">
                         <div className="w-6 h-6 sm-std:w-8 sm-std:h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-[10px] sm-std:text-sm font-bold">3</div>
-                        <span className="text-[10px] sm-std:text-xs font-medium text-muted-foreground">ইমেইল ভেরিফাই</span>
+                        <span className="text-[10px] sm-std:text-xs font-medium text-muted-foreground">{t('register.step3')}</span>
                     </div>
                 </div>
 
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 sm-tab:grid-cols-2 gap-4 sm-std:gap-6">
                     <div className="space-y-4 col-span-1">
                         <div className="space-y-2">
-                            <Label htmlFor="name">পূর্ণ নাম</Label>
+                            <Label htmlFor="name">{t('register.name')}</Label>
                             <Input
                                 id="name"
                                 name="name"
                                 type="text"
-                                placeholder="Karim Ahmed"
+                                placeholder={t('register.namePlaceholder')}
                                 value={formData.name}
                                 onChange={handleChange}
                                 required
@@ -163,12 +174,12 @@ export default function RegisterPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="email">ইমেইল</Label>
+                            <Label htmlFor="email">{t('register.email')}</Label>
                             <Input
                                 id="email"
                                 name="email"
                                 type="email"
-                                placeholder="example@email.com"
+                                placeholder={t('register.emailPlaceholder')}
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
@@ -177,12 +188,12 @@ export default function RegisterPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="phone">মোবাইল নম্বর</Label>
+                            <Label htmlFor="phone">{t('register.phone')}</Label>
                             <Input
                                 id="phone"
                                 name="phone"
                                 type="tel"
-                                placeholder="01712345678"
+                                placeholder={t('register.phonePlaceholder')}
                                 value={formData.phone}
                                 onChange={handleChange}
                                 required
@@ -193,12 +204,12 @@ export default function RegisterPage() {
 
                     <div className="space-y-4 col-span-1">
                         <div className="space-y-2">
-                            <Label htmlFor="serialNumber">সিরিয়াল নম্বর</Label>
+                            <Label htmlFor="serialNumber">{t('register.serialNumber')}</Label>
                             <Input
                                 id="serialNumber"
                                 name="serialNumber"
                                 type="text"
-                                placeholder="PCMBD-2024-XXXX-XXXX"
+                                placeholder={t('register.serialPlaceholder')}
                                 value={formData.serialNumber}
                                 onChange={handleChange}
                                 required
@@ -206,17 +217,17 @@ export default function RegisterPage() {
                                 className="font-mono"
                             />
                             <p className="text-[10px] text-muted-foreground">
-                                ফরম্যাট: PCMBD-YYYY-XXXX-XXXX
+                                Format: PCMBD-YYYY-XXXX-XXXX
                             </p>
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="password">পাসওয়ার্ড</Label>
+                            <Label htmlFor="password">{t('register.password')}</Label>
                             <Input
                                 id="password"
                                 name="password"
                                 type="password"
-                                placeholder="••••••••"
+                                placeholder={t('register.passwordPlaceholder')}
                                 value={formData.password}
                                 onChange={handleChange}
                                 required
@@ -225,12 +236,12 @@ export default function RegisterPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="confirmPassword">পাসওয়ার্ড নিশ্চিত করুন</Label>
+                            <Label htmlFor="confirmPassword">{t('register.confirmPassword')}</Label>
                             <Input
                                 id="confirmPassword"
                                 name="confirmPassword"
                                 type="password"
-                                placeholder="••••••••"
+                                placeholder={t('register.confirmPasswordPlaceholder')}
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
                                 required
@@ -250,11 +261,11 @@ export default function RegisterPage() {
                             {loading ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    প্রসেসিং হচ্ছে...
+                                    {t('register.registering')}
                                 </>
                             ) : (
                                 <>
-                                    রেজিস্ট্রেশন এবং যাচাই সম্পন্ন করুন
+                                    {t('register.registerButton')}
                                     <ArrowRight className="ml-2 h-4 w-4" />
                                 </>
                             )}
@@ -263,9 +274,9 @@ export default function RegisterPage() {
                 </form>
 
                 <div className="mt-8 text-center text-sm border-t pt-6">
-                    <span className="text-muted-foreground">ইতিমধ্যে একাউন্ট আছে? </span>
+                    <span className="text-muted-foreground">{t('register.haveAccount')} </span>
                     <Link href="/login" className="text-primary hover:underline font-medium">
-                        লগইন করুন
+                        {t('register.loginHere')}
                     </Link>
                 </div>
             </Card>

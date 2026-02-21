@@ -86,3 +86,16 @@ export async function searchUsers(query: string) {
 
     return users
 }
+
+export async function updateProfile(userId: string, data: { name: string; phone: string; avatarUrl?: string | null }) {
+    await prisma.user.update({
+        where: { id: userId },
+        data: {
+            name: data.name,
+            phone: data.phone,
+            avatarUrl: data.avatarUrl,
+        }
+    })
+
+    revalidatePath('/dashboard/profile')
+}

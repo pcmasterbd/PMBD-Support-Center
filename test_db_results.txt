@@ -1,0 +1,30 @@
+Testing connection...
+Tables in public schema: [
+  { table_name: 'categories' },
+  { table_name: 'video_tutorials' },
+  { table_name: 'serial_numbers' },
+  { table_name: 'user_downloads' },
+  { table_name: 'user_activities' },
+  { table_name: 'premium_accounts' },
+  { table_name: 'license_keys' },
+  { table_name: 'notifications' },
+  { table_name: 'software' },
+  { table_name: 'support_tickets' },
+  { table_name: 'system_settings' },
+  { table_name: 'users' },
+  { table_name: 'verification_tokens' },
+  { table_name: 'password_reset_tokens' },
+  { table_name: 'two_factor_tokens' },
+  { table_name: 'quick_replies' },
+  { table_name: 'software_mirrors' },
+  { table_name: 'faqs' },
+  { table_name: 'announcements' },
+  { table_name: 'admin_audit_logs' },
+  { table_name: 'ticket_messages' },
+  { table_name: 'customers' },
+  { table_name: 'ticket_feedback' },
+  { table_name: 'account_requests' },
+  { table_name: 'user_favorites' }
+]
+Attempting to count ticket_feedback...
+TicketFeedback count: 0

@@ -1,0 +1,33 @@
+
+> temp_app@0.1.0 build
+> npx prisma generate && next build
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+
+✔ Generated Prisma Client (v6.19.2) to .\node_modules\@prisma\client in 242ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 21.1s
+  Running TypeScript ...
+Failed to compile.
+
+./app/dashboard/admin/page.tsx:54:13
+Type error: Type '{ role: string; userCount: number; pendingTickets: number; totalDownloads: number; pendingRequests: number; recentActivity: { id: string; action: string; createdAt: string; userName: string; }[]; avgRating: number; }' is not assignable to type 'IntrinsicAttributes & AdminDashboardClientProps'.
+  Property 'avgRating' does not exist on type 'IntrinsicAttributes & AdminDashboardClientProps'.
+
+[0m [90m 52 |[39m             pendingRequests[33m=[39m{pendingRequests}
+ [90m 53 |[39m             recentActivity[33m=[39m{serializedActivity}
+[31m[1m>[22m[39m[90m 54 |[39m             avgRating[33m=[39m{avgRating}
+ [90m    |[39m             [31m[1m^[22m[39m
+ [90m 55 |[39m         [33m/[39m[33m>[39m
+ [90m 56 |[39m     )[33m;[39m
+ [90m 57 |[39m }[0m
+Next.js build worker exited with code: 1 and signal: null

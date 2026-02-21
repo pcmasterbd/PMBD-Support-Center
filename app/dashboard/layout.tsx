@@ -6,6 +6,9 @@ import { signOut } from '@/auth'
 import { LogOut } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { DashboardHeader } from '@/components/dashboard-header'
+import { AnnouncementBanner } from '@/components/announcement-banner'
+
+import { prisma } from '@/lib/prisma'
 
 export default async function DashboardLayout({
     children,
@@ -18,22 +21,30 @@ export default async function DashboardLayout({
         redirect('/login')
     }
 
+    const dbUser = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { avatarUrl: true, name: true, email: true, role: true }
+    })
+
     return (
         <div className="flex min-h-screen">
             <DashboardSidebar userRole={session.user.role} />
 
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 flex flex-col">
                 <DashboardHeader
-                    userName={session.user.name}
-                    userEmail={session.user.email}
-                    userRole={session.user.role}
+                    userName={dbUser?.name || session.user.name}
+                    userEmail={dbUser?.email || session.user.email}
+                    userImage={dbUser?.avatarUrl}
+                    userRole={dbUser?.role || session.user.role}
                     signOutAction={async () => {
                         'use server'
                         await signOut({ redirectTo: '/' })
                     }}
                 />
 
-                <main className="p-3 sm-std:p-4 md-tab:p-6">
+                <AnnouncementBanner />
+
+                <main className="flex-1 p-3 sm-std:p-4 md-tab:p-6 overflow-y-auto">
                     {children}
                 </main>
             </div>

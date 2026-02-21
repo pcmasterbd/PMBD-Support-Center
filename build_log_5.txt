@@ -1,0 +1,32 @@
+
+> temp_app@0.1.0 build
+> npx prisma generate && next build
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+
+✔ Generated Prisma Client (v6.19.2) to .\node_modules\@prisma\client in 246ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 19.5s
+  Running TypeScript ...
+Failed to compile.
+
+./app/dashboard/superadmin/logs/page.tsx:35:25
+Type error: 'admins' is possibly 'undefined'.
+
+[0m [90m 33 |[39m                 initialLogs[33m=[39m{initialLogs [36mas[39m any}
+ [90m 34 |[39m                 initialPagination[33m=[39m{initialPagination}
+[31m[1m>[22m[39m[90m 35 |[39m                 admins[33m=[39m{admins[33m.[39mmap(a [33m=>[39m ({ id[33m:[39m a[33m.[39mid[33m,[39m name[33m:[39m a[33m.[39mname }))}
+ [90m    |[39m                         [31m[1m^[22m[39m
+ [90m 36 |[39m                 actions[33m=[39m{actions}
+ [90m 37 |[39m             [33m/[39m[33m>[39m
+ [90m 38 |[39m         [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
+Next.js build worker exited with code: 1 and signal: null

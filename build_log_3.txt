@@ -1,0 +1,32 @@
+
+> temp_app@0.1.0 build
+> npx prisma generate && next build
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+
+✔ Generated Prisma Client (v6.19.2) to .\node_modules\@prisma\client in 248ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 15.1s
+  Running TypeScript ...
+Failed to compile.
+
+./app/dashboard/admin/serials/page.tsx:15:46
+Type error: Object literal may only specify known properties, and 'isActivated' does not exist in type 'SerialNumberWhereInput'.
+
+[0m [90m 13 |[39m     [36mconst[39m [totalSerials[33m,[39m activatedCount[33m,[39m serials] [33m=[39m [36mawait[39m [33mPromise[39m[33m.[39mall([
+ [90m 14 |[39m         prisma[33m.[39mserialNumber[33m.[39mcount()[33m,[39m
+[31m[1m>[22m[39m[90m 15 |[39m         prisma[33m.[39mserialNumber[33m.[39mcount({ where[33m:[39m { isActivated[33m:[39m [36mtrue[39m } })[33m,[39m
+ [90m    |[39m                                              [31m[1m^[22m[39m
+ [90m 16 |[39m         prisma[33m.[39mserialNumber[33m.[39mfindMany({
+ [90m 17 |[39m             include[33m:[39m {
+ [90m 18 |[39m                 user[33m:[39m {[0m
+Next.js build worker exited with code: 1 and signal: null

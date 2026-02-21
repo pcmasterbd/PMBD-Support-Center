@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label"
 import { createUser, updateUser } from "@/lib/actions/user-actions"
 import { useState } from "react"
 import { useFormStatus } from "react-dom"
+import { toast } from "sonner"
 
 interface UserFormProps {
     user?: any // If providing a user, it's an edit form
@@ -28,12 +29,16 @@ export function UserForm({ user, onSuccess }: UserFormProps) {
         try {
             if (user) {
                 await updateUser(user.id, formData)
+                toast.success('User updated successfully')
             } else {
                 await createUser(formData)
+                toast.success('User created successfully')
             }
             onSuccess()
         } catch (err: any) {
-            setError(err.message || 'Something went wrong')
+            const errorMessage = err.message || 'Something went wrong'
+            setError(errorMessage)
+            toast.error(errorMessage)
         }
     }
 

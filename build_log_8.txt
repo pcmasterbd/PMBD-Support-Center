@@ -1,0 +1,118 @@
+
+> temp_app@0.1.0 build
+> npx prisma generate && next build
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+
+✔ Generated Prisma Client (v6.19.2) to .\node_modules\@prisma\client in 268ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 19.4s
+  Running TypeScript ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/46) ...
+  Generating static pages using 7 workers (11/46) 
+Failed to fetch analytics: Error: Dynamic server usage: Route /dashboard/superadmin/analytics couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at m (C:\Users\PC MASTER BD\Desktop\PMBD Support Center\.next\server\chunks\ssr\_2e15b550._.js:1:39539)
+    at <unknown> (C:\Users\PC MASTER BD\Desktop\PMBD Support Center\.next\server\chunks\ssr\_2e15b550._.js:404:57731)
+    at e (C:\Users\PC MASTER BD\Desktop\PMBD Support Center\.next\server\chunks\ssr\_78213397._.js:2:4555)
+    at e (C:\Users\PC MASTER BD\Desktop\PMBD Support Center\.next\server\chunks\ssr\[root-of-the-server]__e247c00e._.js:1:1496)
+    at stringify (<anonymous>) {
+  description: "Route /dashboard/superadmin/analytics couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+  Generating static pages using 7 workers (22/46) 
+  Generating static pages using 7 workers (34/46) 
+Failed to fetch serials: Error [PrismaClientKnownRequestError]: 
+Invalid `prisma.serialNumber.findMany()` invocation:
+
+
+The column `serial_numbers.packageType` does not exist in the current database.
+    at async g (C:\Users\PC MASTER BD\Desktop\PMBD Support Center\.next\server\chunks\ssr\_7cefb90e._.js:2:4566)
+    at async e (C:\Users\PC MASTER BD\Desktop\PMBD Support Center\.next\server\chunks\ssr\[root-of-the-server]__a673d5f0._.js:1:1440) {
+  code: 'P2022',
+  meta: [Object],
+  clientVersion: '6.19.2'
+}
+Failed to fetch FAQs: Error [PrismaClientKnownRequestError]: 
+Invalid `prisma.fAQ.findMany()` invocation:
+
+
+The table `public.faqs` does not exist in the current database.
+    at async f (C:\Users\PC MASTER BD\Desktop\PMBD Support Center\.next\server\chunks\ssr\[root-of-the-server]__cf632a7a._.js:2:395)
+    at async e (C:\Users\PC MASTER BD\Desktop\PMBD Support Center\.next\server\chunks\ssr\[root-of-the-server]__4eff96a6._.js:1:1290) {
+  code: 'P2021',
+  meta: [Object],
+  clientVersion: '6.19.2'
+}
+✓ Generating static pages using 7 workers (46/46) in 8.1s
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/admin/content
+├ ƒ /api/admin/content/software/[id]/stats
+├ ƒ /api/admin/premium/requests/[id]
+├ ƒ /api/admin/serials/bulk
+├ ƒ /api/admin/serials/generate
+├ ƒ /api/admin/serials/import
+├ ƒ /api/admin/users/[id]/status
+├ ƒ /api/auth/[...nextauth]
+├ ƒ /api/auth/register
+├ ƒ /api/auth/verify-email
+├ ƒ /api/support
+├ ƒ /api/support/tickets
+├ ƒ /api/support/tickets/[id]/messages
+├ ƒ /api/test-email
+├ ○ /auth/new-verification
+├ ƒ /dashboard
+├ ƒ /dashboard/activity
+├ ƒ /dashboard/admin
+├ ƒ /dashboard/admin/content
+├ ƒ /dashboard/admin/content/faq
+├ ƒ /dashboard/admin/content/software
+├ ƒ /dashboard/admin/content/videos
+├ ƒ /dashboard/admin/customers
+├ ƒ /dashboard/admin/logs
+├ ƒ /dashboard/admin/premium
+├ ƒ /dashboard/admin/serials
+├ ƒ /dashboard/admin/settings
+├ ƒ /dashboard/admin/settings/notifications
+├ ƒ /dashboard/admin/support
+├ ƒ /dashboard/admin/support/[id]
+├ ƒ /dashboard/admin/support/analytics
+├ ƒ /dashboard/admin/users
+├ ƒ /dashboard/admin/users/[id]
+├ ƒ /dashboard/premium/accounts
+├ ƒ /dashboard/premium/licenses
+├ ƒ /dashboard/profile
+├ ƒ /dashboard/software
+├ ƒ /dashboard/superadmin/admins
+├ ƒ /dashboard/superadmin/analytics
+├ ƒ /dashboard/superadmin/announcements
+├ ƒ /dashboard/superadmin/logs
+├ ƒ /dashboard/superadmin/serials
+├ ƒ /dashboard/superadmin/settings
+├ ƒ /dashboard/support
+├ ƒ /dashboard/support/[id]
+├ ƒ /dashboard/support/new
+├ ƒ /dashboard/tutorials
+├ ○ /login
+├ ○ /register
+└ ○ /support/faq
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

@@ -4,23 +4,29 @@ import { useState } from 'react'
 import { LogOut, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { LanguageToggle } from '@/components/language-toggle'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { useLanguage } from '@/lib/language-context'
 
 interface DashboardHeaderProps {
     userName: string | null | undefined
     userEmail: string | null | undefined
+    userImage?: string | null
     userRole?: string
     signOutAction: () => Promise<void>
 }
 
 import { DashboardSidebar } from './dashboard-sidebar'
+import { GlobalSearch } from './global-search'
+import { UserNav } from './user-nav'
 
-export function DashboardHeader({ userName, userEmail, userRole, signOutAction }: DashboardHeaderProps) {
+export function DashboardHeader({ userName, userEmail, userImage, userRole, signOutAction }: DashboardHeaderProps) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     const pathname = usePathname()
     const isAdmin = userRole === 'ADMIN' || userRole === 'SUPERADMIN'
+    const { t } = useLanguage()
 
     return (
         <>
@@ -33,25 +39,29 @@ export function DashboardHeader({ userName, userEmail, userRole, signOutAction }
                         >
                             <Menu className="w-5 h-5 text-slate-700" />
                         </button>
-                        <div>
-                            <h1 className="text-sm sm-std:text-base md:text-xl font-semibold line-clamp-1 truncate max-w-[120px] xs:max-w-[150px] sm-std:max-w-[200px] md:max-w-none">
-                                স্বাগতম, {userName}
+                        <div className="hidden md:flex flex-col">
+                            <h1 className="text-sm sm-std:text-base md:text-lg font-black text-slate-800 dark:text-slate-200 line-clamp-1 leading-none">
+                                PC MASTER <span className="text-primary italic">BD</span>
                             </h1>
-                            <p className="text-[10px] sm-std:text-xs text-muted-foreground hidden xs:block">{userEmail}</p>
+                            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest leading-none mt-1">{t('sidebar.supportCenter')}</p>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 sm-std:gap-4">
+                    <div className="flex items-center gap-2 sm-std:gap-3">
+                        <div className="hidden md:block mr-2">
+                            <GlobalSearch />
+                        </div>
+                        <LanguageToggle />
                         <ThemeToggle />
-                        <form action={signOutAction}>
-                            <Button variant="outline" size="sm" type="submit" className="hidden sm-std:flex">
-                                <LogOut className="w-4 h-4 mr-2" />
-                                লগআউট
-                            </Button>
-                            <Button variant="outline" size="icon" type="submit" className="sm-std:hidden">
-                                <LogOut className="w-4 h-4" />
-                            </Button>
-                        </form>
+                        <UserNav
+                            user={{
+                                name: userName,
+                                email: userEmail,
+                                image: userImage,
+                                role: userRole
+                            }}
+                            signOutAction={signOutAction}
+                        />
                     </div>
                 </div>
             </header>

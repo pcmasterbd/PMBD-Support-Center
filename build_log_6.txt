@@ -1,0 +1,32 @@
+
+> temp_app@0.1.0 build
+> npx prisma generate && next build
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+
+✔ Generated Prisma Client (v6.19.2) to .\node_modules\@prisma\client in 225ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 17.7s
+  Running TypeScript ...
+Failed to compile.
+
+./app/dashboard/tutorials/page.tsx:18:24
+Type error: Property 'updatedAt' does not exist on type '{ videos: { id: string; createdAt: Date; updatedAt: Date; title: string; description: string | null; youtubeId: string; thumbnailUrl: string | null; duration: number | null; viewCount: number; isPremium: boolean; displayOrder: number; categoryId: string; }[]; } & { ...; }'.
+
+[0m [90m 16 |[39m         [33m...[39mcat[33m,[39m
+ [90m 17 |[39m         createdAt[33m:[39m cat[33m.[39mcreatedAt[33m.[39mtoISOString()[33m,[39m
+[31m[1m>[22m[39m[90m 18 |[39m         updatedAt[33m:[39m cat[33m.[39mupdatedAt[33m.[39mtoISOString()[33m,[39m
+ [90m    |[39m                        [31m[1m^[22m[39m
+ [90m 19 |[39m         videos[33m:[39m cat[33m.[39mvideos[33m.[39mmap(v [33m=>[39m ({
+ [90m 20 |[39m             [33m...[39mv[33m,[39m
+ [90m 21 |[39m             createdAt[33m:[39m v[33m.[39mcreatedAt[33m.[39mtoISOString()[33m,[39m[0m
+Next.js build worker exited with code: 1 and signal: null

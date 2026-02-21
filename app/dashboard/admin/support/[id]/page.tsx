@@ -22,6 +22,7 @@ import { TicketPriorityToggle } from "@/components/admin/ticket-priority-toggle"
 import { ManagementNotes } from "@/components/admin/management-notes";
 import { QuickReplyManager } from "@/components/admin/quick-reply-manager";
 import { getQuickReplies } from "@/lib/actions/quick-reply-actions";
+import { TicketMessageReactions } from "@/components/ticket-message-reactions";
 
 export default async function AdminTicketDetailPage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
     const params = await paramsPromise;
@@ -39,6 +40,13 @@ export default async function AdminTicketDetailPage({ params: paramsPromise }: {
                     include: {
                         user: {
                             select: { name: true, role: true }
+                        },
+                        reactions: {
+                            include: {
+                                user: {
+                                    select: { name: true }
+                                }
+                            }
                         }
                     },
                     orderBy: { createdAt: 'asc' }
@@ -96,7 +104,7 @@ export default async function AdminTicketDetailPage({ params: paramsPromise }: {
                             const isUserAdmin = message.user.role === 'ADMIN' || message.user.role === 'SUPERADMIN';
                             return (
                                 <div key={message.id} className={`flex ${isUserAdmin ? 'justify-end' : 'justify-start'}`}>
-                                    <div className={`max-w-[85%] space-y-2`}>
+                                    <div className={`max-w-[85%] space-y-2 group`}>
                                         <div className={`flex items-center gap-2 mb-1 px-1 ${isUserAdmin ? 'justify-end text-right' : 'justify-start'}`}>
                                             {isUserAdmin && <Shield className="w-3 h-3 text-primary" />}
                                             {!isUserAdmin && <User className="w-3 h-3 text-muted-foreground" />}
@@ -105,17 +113,40 @@ export default async function AdminTicketDetailPage({ params: paramsPromise }: {
                                                 {new Date(message.createdAt).toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' })}
                                             </span>
                                         </div>
-                                        <Card className={`p-4 shadow-sm border-2 ${isUserAdmin
-                                            ? 'bg-primary/5 border-primary/20 rounded-tr-none'
-                                            : 'bg-muted/10 border-muted rounded-tl-none'
-                                            }`}>
-                                            <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.message}</p>
-                                            {message.attachmentUrl && (
-                                                <Link href={message.attachmentUrl} target="_blank" className="mt-4 block p-2 bg-background border rounded-md text-xs font-medium hover:text-primary transition-colors">
-                                                    সংযুক্ত ফাইলটি দেখুন
-                                                </Link>
-                                            )}
-                                        </Card>
+                                        <div className="relative">
+                                            <Card className={`p-4 shadow-sm border-2 ${isUserAdmin
+                                                ? 'bg-primary/5 border-primary/20 rounded-tr-none'
+                                                : 'bg-muted/10 border-muted rounded-tl-none'
+                                                }`}>
+                                                <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.message}</p>
+                                                {message.attachmentUrl && (
+                                                    <div className="mt-4">
+                                                        {message.attachmentUrl.startsWith('data:image/') ? (
+                                                            <Link href={message.attachmentUrl} target="_blank">
+                                                                <img
+                                                                    src={message.attachmentUrl}
+                                                                    alt="Attachment"
+                                                                    className="max-w-full h-auto rounded-lg border shadow-sm hover:opacity-90 transition-opacity"
+                                                                />
+                                                            </Link>
+                                                        ) : (
+                                                            <Link href={message.attachmentUrl} target="_blank" className="block p-2 bg-background border rounded-md text-xs font-medium hover:text-primary transition-colors">
+                                                                সংযুক্ত ফাইলটি দেখুন
+                                                            </Link>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </Card>
+
+                                            <div className={`absolute -bottom-3 ${isUserAdmin ? 'right-2' : 'left-2'}`}>
+                                                <TicketMessageReactions
+                                                    ticketId={ticket.id}
+                                                    messageId={message.id}
+                                                    initialReactions={message.reactions || []}
+                                                    currentUserId={session.user.id}
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             )
