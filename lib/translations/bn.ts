@@ -25,7 +25,6 @@ export const bn = {
         adminDashboard: 'অ্যাডমিন ড্যাশবোর্ড',
         supportManagement: 'সাপোর্ট ম্যানেজমেন্ট',
         userManagement: 'ইউজার ম্যানেজমেন্ট',
-        serialManagement: 'সিরিয়াল ম্যানেজমেন্ট',
         softwareContent: 'সফটওয়্যার কন্টেন্ট',
         videoTutorials: 'ভিডিও টিউটোরিয়াল',
         premiumRequests: 'প্রিমিয়াম রিকোয়েস্ট',
@@ -129,8 +128,6 @@ export const bn = {
         supportDashboardDesc: 'টিকেট পরিচালনা ও উত্তর দিন',
         userManagement: 'ইউজার ম্যানেজমেন্ট',
         userManagementDesc: 'রোল, স্ট্যাটাস ও বিবরণ',
-        serialNumbers: 'সিরিয়াল নম্বর',
-        serialNumbersDesc: 'অ্যাক্টিভেশন ও ইনভেন্টরি',
         softwareLibrary: 'সফটওয়্যার লাইব্রেরি',
         softwareLibraryDesc: 'ফাইল ও ভার্সন পরিচালনা',
         videoTutorials: 'ভিডিও টিউটোরিয়াল',
@@ -342,21 +339,6 @@ export const bn = {
         action: 'অ্যাকশন',
     },
 
-    // ── Admin Serials Page ──
-    adminSerials: {
-        title: 'সিরিয়াল নম্বর ম্যানেজমেন্ট',
-        subtitle: 'পেনড্রাইভের সিরিয়াল নম্বর যোগ এবং অ্যাক্টিভেশন ট্রাক করুন',
-        totalGenerated: 'মোট জেনারেট',
-        activated: 'অ্যাক্টিভেটেড',
-        available: 'উপলব্ধ',
-        activationRate: 'অ্যাক্টিভেশন রেট',
-        export: 'এক্সপোর্ট',
-        serialCode: 'সিরিয়াল কোড',
-        activatedBy: 'অ্যাক্টিভেটেড বাই',
-        activationDate: 'অ্যাক্টিভেশন ডেট',
-        notActivated: 'এখনো অ্যাক্টিভেট হয়নি',
-        noSerials: 'কোনো সিরিয়াল পাওয়া যায়নি।',
-    },
 
     // ── Common ──
     common: {

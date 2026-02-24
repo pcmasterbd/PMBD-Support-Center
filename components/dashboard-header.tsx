@@ -15,6 +15,7 @@ interface DashboardHeaderProps {
     userEmail: string | null | undefined
     userImage?: string | null
     userRole?: string
+    packageType?: string | null
     signOutAction: () => Promise<void>
 }
 
@@ -22,7 +23,7 @@ import { DashboardSidebar } from './dashboard-sidebar'
 import { GlobalSearch } from './global-search'
 import { UserNav } from './user-nav'
 
-export function DashboardHeader({ userName, userEmail, userImage, userRole, signOutAction }: DashboardHeaderProps) {
+export function DashboardHeader({ userName, userEmail, userImage, userRole, packageType, signOutAction }: DashboardHeaderProps) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     const pathname = usePathname()
     const isAdmin = userRole === 'ADMIN' || userRole === 'SUPERADMIN'
@@ -58,7 +59,8 @@ export function DashboardHeader({ userName, userEmail, userImage, userRole, sign
                                 name: userName,
                                 email: userEmail,
                                 image: userImage,
-                                role: userRole
+                                role: userRole,
+                                packageType: packageType
                             }}
                             signOutAction={signOutAction}
                         />

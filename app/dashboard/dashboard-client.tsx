@@ -20,7 +20,7 @@ import { useLanguage } from '@/lib/language-context'
 
 interface UserData {
     name: string | null
-    serialNumber: { code: string; assignedAt: string | null } | null
+    serialNumber: { code: string; assignedAt: string | null; packageType?: string | null } | null
     activities: { id: string; action: string; details: string | null; createdAt: string }[]
     tickets: { subject: string }[]
     _count: { downloads: number; activities: number; tickets: number }
@@ -56,7 +56,11 @@ export function UserDashboardClient({ user, videoCount }: { user: UserData | nul
                                 <span className="uppercase tracking-widest">{getGreeting()}</span>
                             </div>
                             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight leading-tight">
-                                {user?.name} <span className="text-white/60 font-light">|</span> <span className="text-blue-200 italic font-semibold text-xl sm:text-2xl md:text-3xl">{t('userDashboard.premiumUser')}</span>
+                                {user?.name} <span className="text-white/60 font-light">|</span> <span className="text-blue-200 italic font-semibold text-xl sm:text-2xl md:text-3xl">
+                                    {user?.serialNumber?.packageType
+                                        ? `${user.serialNumber.packageType.split(' - ')[0]} User`
+                                        : t('userDashboard.premiumUser')}
+                                </span>
                             </h2>
                             <p className="text-sm sm:text-base text-white/60 font-medium max-w-xl leading-relaxed">
                                 {t('userDashboard.welcomeDesc')}

@@ -29,6 +29,7 @@ interface UserNavProps {
         email?: string | null
         image?: string | null
         role?: string | null
+        packageType?: string | null
     }
     signOutAction: () => Promise<void>
 }
@@ -55,11 +56,18 @@ export function UserNav({ user, signOutAction }: UserNavProps) {
                 <div className="absolute -top-1 right-4 w-3 h-3 rotate-45 bg-white dark:bg-slate-900 border-t border-l border-slate-200/60 dark:border-slate-800/60" />
 
                 <div className="flex flex-col space-y-1 p-4 mb-2 text-center relative z-10">
-                    <p className="text-base font-black text-slate-800 dark:text-slate-100 leading-tight">
-                        {user.name || 'Someone Famous'}
-                    </p>
+                    <div className="flex items-center justify-center gap-2">
+                        <p className="text-base font-black text-slate-800 dark:text-slate-100 leading-tight">
+                            {user.name || 'Someone Famous'}
+                        </p>
+                        {user.packageType && (
+                            <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-wider">
+                                {user.packageType.split(' - ')[0]} User
+                            </span>
+                        )}
+                    </div>
                     <p className="text-xs font-bold text-slate-400 dark:text-slate-500 tracking-tight">
-                        {user.role === 'SUPERADMIN' ? 'Super Admin' : user.role === 'ADMIN' ? 'Administrator' : 'Website Designer'}
+                        {user.role === 'SUPERADMIN' ? 'Super Admin' : user.role === 'ADMIN' ? 'Admin' : 'Customer'}
                     </p>
                 </div>
 

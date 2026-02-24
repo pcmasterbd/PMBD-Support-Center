@@ -23,7 +23,17 @@ export default async function DashboardLayout({
 
     const dbUser = await prisma.user.findUnique({
         where: { id: session.user.id },
-        select: { avatarUrl: true, name: true, email: true, role: true }
+        select: {
+            avatarUrl: true,
+            name: true,
+            email: true,
+            role: true,
+            serialNumber: {
+                select: {
+                    packageType: true
+                }
+            }
+        }
     })
 
     return (
@@ -36,6 +46,7 @@ export default async function DashboardLayout({
                     userEmail={dbUser?.email || session.user.email}
                     userImage={dbUser?.avatarUrl}
                     userRole={dbUser?.role || session.user.role}
+                    packageType={dbUser?.serialNumber?.packageType}
                     signOutAction={async () => {
                         'use server'
                         await signOut({ redirectTo: '/' })

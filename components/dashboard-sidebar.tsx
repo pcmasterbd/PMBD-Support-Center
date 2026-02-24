@@ -49,7 +49,6 @@ export function DashboardSidebar({ userRole, userName, userEmail, mobile, isOpen
         { titleKey: 'sidebar.adminDashboard', href: '/dashboard/admin', icon: Shield },
         { titleKey: 'sidebar.supportManagement', href: '/dashboard/admin/support', icon: HelpCircle },
         { titleKey: 'sidebar.userManagement', href: '/dashboard/admin/users', icon: Users },
-        { titleKey: 'sidebar.serialManagement', href: '/dashboard/admin/serials', icon: Key },
         { titleKey: 'sidebar.softwareContent', href: '/dashboard/admin/content/software', icon: Download },
         { titleKey: 'sidebar.videoTutorials', href: '/dashboard/admin/content/videos', icon: Video },
         { titleKey: 'sidebar.premiumRequests', href: '/dashboard/admin/premium', icon: CreditCard },
@@ -62,7 +61,6 @@ export function DashboardSidebar({ userRole, userName, userEmail, mobile, isOpen
 
     const superAdminMenuItems = [
         { titleKey: 'sidebar.superAdminAnalytics', href: '/dashboard/superadmin/analytics', icon: Activity },
-        { titleKey: 'sidebar.serialManagement', href: '/dashboard/superadmin/serials', icon: Key },
         { titleKey: 'sidebar.adminManagement', href: '/dashboard/superadmin/admins', icon: Shield },
         { titleKey: 'sidebar.systemSettings', href: '/dashboard/superadmin/settings', icon: Settings },
         { titleKey: 'sidebar.auditLogs', href: '/dashboard/superadmin/logs', icon: FileText },

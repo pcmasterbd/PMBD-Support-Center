@@ -59,7 +59,6 @@ export function AdminDashboardClient({
     const quickLinks = [
         { label: t('adminDashboard.supportDashboard'), icon: Ticket, href: "/dashboard/admin/support", desc: t('adminDashboard.supportDashboardDesc'), color: "from-orange-500 to-red-500" },
         { label: t('adminDashboard.userManagement'), icon: UserPlus, href: "/dashboard/admin/users", desc: t('adminDashboard.userManagementDesc'), color: "from-blue-500 to-cyan-500" },
-        { label: t('adminDashboard.serialNumbers'), icon: Shield, href: "/dashboard/admin/serials", desc: t('adminDashboard.serialNumbersDesc'), color: "from-emerald-500 to-green-500" },
         { label: t('adminDashboard.softwareLibrary'), icon: Download, href: "/dashboard/admin/content/software", desc: t('adminDashboard.softwareLibraryDesc'), color: "from-violet-500 to-purple-500" },
         { label: t('adminDashboard.videoTutorials'), icon: Play, href: "/dashboard/admin/content/videos", desc: t('adminDashboard.videoTutorialsDesc'), color: "from-pink-500 to-rose-500" },
         { label: t('adminDashboard.systemSettings'), icon: LayoutDashboard, href: "/dashboard/admin/settings", desc: t('adminDashboard.systemSettingsDesc'), color: "from-slate-500 to-gray-600" },

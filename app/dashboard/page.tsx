@@ -44,6 +44,7 @@ export default async function DashboardPage() {
         serialNumber: user.serialNumber ? {
             code: user.serialNumber.code,
             assignedAt: user.serialNumber.assignedAt?.toISOString() || null,
+            packageType: user.serialNumber.packageType,
         } : null,
         activities: user.activities.map(a => ({
             id: a.id,

@@ -25,7 +25,6 @@ export const en = {
         adminDashboard: 'Admin Dashboard',
         supportManagement: 'Support Management',
         userManagement: 'User Management',
-        serialManagement: 'Serial Management',
         softwareContent: 'Software Content',
         videoTutorials: 'Video Tutorials',
         premiumRequests: 'Premium Requests',
@@ -129,8 +128,6 @@ export const en = {
         supportDashboardDesc: 'Manage tickets and replies',
         userManagement: 'User Management',
         userManagementDesc: 'Roles, status, and details',
-        serialNumbers: 'Serial Numbers',
-        serialNumbersDesc: 'Activation and inventory',
         softwareLibrary: 'Software Library',
         softwareLibraryDesc: 'Files and version management',
         videoTutorials: 'Video Tutorials',
@@ -342,21 +339,6 @@ export const en = {
         action: 'Action',
     },
 
-    // ── Admin Serials Page ──
-    adminSerials: {
-        title: 'Serial Number Management',
-        subtitle: 'Add pen drive serial numbers and track activations',
-        totalGenerated: 'Total Generated',
-        activated: 'Activated',
-        available: 'Available',
-        activationRate: 'Activation Rate',
-        export: 'Export',
-        serialCode: 'Serial Code',
-        activatedBy: 'Activated By',
-        activationDate: 'Activation Date',
-        notActivated: 'Not yet activated',
-        noSerials: 'No serials found.',
-    },
 
     // ── Common ──
     common: {
