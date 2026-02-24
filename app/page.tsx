@@ -34,7 +34,7 @@ export default function HomePage() {
               <span className="text-[10px] md:text-sm font-black uppercase tracking-widest">{t('landing.heroSubtitle')}</span>
             </div>
 
-            <h1 className="leading-[1.1] tracking-tighters sm:px-4 md:px-0">
+            <h1 className="leading-[1.1] tracking-tight sm:px-4 md:px-0 text-[10vw] sm:text-5xl md:text-6xl lg:text-7xl">
               {t('landing.heroTitle').split(' ').map((word, i) =>
                 word === 'BD' ? <span key={i} className="text-primary italic"> BD</span> : (i > 0 ? ' ' + word : word)
               )}
