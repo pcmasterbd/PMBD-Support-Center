@@ -50,37 +50,39 @@ export function VideoCallButton({ ticketId, isAdmin, userName }: VideoCallButton
             toast.error(result.error || "Failed to start call")
         }
         setLoading(false)
-        const handleJoinCall = () => {
-            if (roomName) {
-                setIsModalOpen(true)
-            }
-        }
-
-        return (
-            <>
-                <Button
-                    variant={isAdmin ? "default" : "outline"}
-                    size="sm"
-                    className={`gap-2 font-bold ${isAdmin ? 'bg-primary' : 'border-primary text-primary hover:bg-primary/5'}`}
-                    onClick={isAdmin ? handleStartCall : handleJoinCall}
-                    disabled={loading || (!isAdmin && !roomName)}
-                >
-                    {loading ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : isAdmin ? (
-                        <Video className="w-4 h-4" />
-                    ) : (
-                        <PhoneCall className="w-4 h-4" />
-                    )}
-                    {isAdmin ? t('videoCall.start') : t('videoCall.join')}
-                </Button>
-
-                <VideoCallModal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    roomName={roomName}
-                    userName={userName}
-                />
-            </>
-        )
     }
+
+    const handleJoinCall = () => {
+        if (roomName) {
+            setIsModalOpen(true)
+        }
+    }
+
+    return (
+        <>
+            <Button
+                variant={isAdmin ? "default" : "outline"}
+                size="sm"
+                className={`gap-2 font-bold ${isAdmin ? 'bg-primary' : 'border-primary text-primary hover:bg-primary/5'}`}
+                onClick={isAdmin ? handleStartCall : handleJoinCall}
+                disabled={loading || (!isAdmin && !roomName)}
+            >
+                {loading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                ) : isAdmin ? (
+                    <Video className="w-4 h-4" />
+                ) : (
+                    <PhoneCall className="w-4 h-4" />
+                )}
+                {isAdmin ? t('videoCall.start') : t('videoCall.join')}
+            </Button>
+
+            <VideoCallModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                roomName={roomName}
+                userName={userName}
+            />
+        </>
+    )
+}
