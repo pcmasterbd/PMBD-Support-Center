@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect } from "react"
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +22,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/language-context";
+import { runExpirationCheck } from "@/lib/actions/notification-actions";
 
 interface ActivityItem {
     id: string;
@@ -48,6 +51,11 @@ export function AdminDashboardClient({
     recentActivity,
 }: AdminDashboardClientProps) {
     const { t } = useLanguage();
+
+    useEffect(() => {
+        // Run expiration check when admin dashboard loads
+        runExpirationCheck();
+    }, []);
 
     const stats = [
         { label: t('adminDashboard.totalUsers'), value: userCount, icon: Users, color: "blue", href: "/dashboard/admin/users" },

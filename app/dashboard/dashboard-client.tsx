@@ -1,6 +1,8 @@
 'use client'
 
 import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import {
     Shield,
     Video,
@@ -20,8 +22,14 @@ import { useLanguage } from '@/lib/language-context'
 
 interface UserData {
     name: string | null
-    serialNumber: { code: string; assignedAt: string | null; packageType?: string | null } | null
+    serialNumber: {
+        code: string;
+        assignedAt: string | null;
+        expiresAt: string | null;
+        packageType?: string | null
+    } | null
     activities: { id: string; action: string; details: string | null; createdAt: string }[]
+    downloads: { id: string; softwareName: string; downloadedAt: string }[]
     tickets: { subject: string }[]
     _count: { downloads: number; activities: number; tickets: number }
 }
@@ -43,198 +51,233 @@ export function UserDashboardClient({ user, videoCount }: { user: UserData | nul
         return '🌙'
     }
 
+    const getDaysRemaining = () => {
+        if (!user?.serialNumber?.expiresAt) return null
+        const expiry = new Date(user.serialNumber.expiresAt)
+        const diffTime = expiry.getTime() - new Date().getTime()
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+        return diffDays > 0 ? diffDays : 0
+    }
+
+    const daysRemaining = getDaysRemaining()
+
     return (
         <div className="space-y-6 sm:space-y-8 pb-10">
 
             {/* ── Hero Welcome Banner ── */}
             <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-primary via-primary/90 to-blue-700 dark:from-primary dark:via-primary/80 dark:to-indigo-900 p-5 sm:p-8 md:p-10 text-white shadow-2xl shadow-primary/20">
                 <div className="relative z-10">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div className="space-y-2">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div className="space-y-3">
                             <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-white/70">
                                 <span>{getTimeEmoji()}</span>
                                 <span className="uppercase tracking-widest">{getGreeting()}</span>
                             </div>
-                            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight leading-tight">
-                                {user?.name} <span className="text-white/60 font-light">|</span> <span className="text-blue-200 italic font-semibold text-xl sm:text-2xl md:text-3xl">
-                                    {user?.serialNumber?.packageType
-                                        ? `${user.serialNumber.packageType.split(' - ')[0]} User`
-                                        : t('userDashboard.premiumUser')}
-                                </span>
+                            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tight leading-tight">
+                                {t('userDashboard.hello')}, {user?.name?.split(' ')[0]}! <span className="text-white/40 font-light">👋</span>
                             </h2>
-                            <p className="text-sm sm:text-base text-white/60 font-medium max-w-xl leading-relaxed">
-                                {t('userDashboard.welcomeDesc')}
-                            </p>
-                        </div>
-                        <Link href="/dashboard/profile" className="self-start md:self-auto flex-shrink-0">
-                            <div className="flex items-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-2xl px-5 py-3 transition-all duration-300 group">
-                                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-lg font-black">
-                                    {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-                                </div>
-                                <div className="hidden sm:block">
-                                    <p className="text-sm font-bold">{t('header.myProfile')}</p>
-                                    <p className="text-[10px] text-white/50">{t('header.settings')}</p>
-                                </div>
-                                <ChevronRight className="w-4 h-4 text-white/40 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                            <div className="flex flex-wrap items-center gap-3 pt-2">
+                                <span className="px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-xs font-black uppercase tracking-wider border border-white/20">
+                                    {user?.serialNumber ? (user?.serialNumber?.packageType?.split(' - ')[0] || 'Premium') : 'Free'} User
+                                </span>
+                                {user?.serialNumber ? (
+                                    daysRemaining !== null ? (
+                                        <span className={cn(
+                                            "px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border",
+                                            daysRemaining < 30
+                                                ? "bg-red-500/20 text-red-100 border-red-500/30"
+                                                : "bg-emerald-500/20 text-emerald-100 border-emerald-500/30"
+                                        )}>
+                                            Validity: {daysRemaining} Days
+                                        </span>
+                                    ) : (
+                                        <span className="px-3 py-1 bg-emerald-500/20 text-emerald-100 border-emerald-500/30 rounded-full text-xs font-black uppercase tracking-wider">
+                                            Validity: Lifetime
+                                        </span>
+                                    )
+                                ) : (
+                                    <span className="px-3 py-1 bg-amber-500/10 text-amber-500 border-amber-500/20 rounded-full text-xs font-black uppercase tracking-wider">
+                                        Pending Activation
+                                    </span>
+                                )}
                             </div>
-                        </Link>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 text-center min-w-[120px]">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-1">Downloads</p>
+                                <p className="text-2xl font-black">{user?._count.downloads || 0}</p>
+                            </div>
+                            <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 text-center min-w-[120px]">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-1">Tickets</p>
+                                <p className="text-2xl font-black">{user?._count.tickets || 0}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl" />
+                {/* Decorative Elements */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl animate-pulse" />
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-400/10 rounded-full -ml-20 -mb-20 blur-2xl" />
             </div>
 
-            {/* ── Product Card + Stats ── */}
-            <div className="grid lg:grid-cols-3 gap-5 sm:gap-6">
+            {/* ── Quick Links Group ── */}
+            <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-amber-500" />
+                    <h3 className="font-bold text-base sm:text-lg tracking-tight">Quick Resources</h3>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <QuickTile
+                        href="/dashboard/software"
+                        title="Software"
+                        desc="Downloads & Tools"
+                        icon={<Download className="w-6 h-6" />}
+                        gradient="from-blue-500 to-blue-600 shadow-blue-500/25"
+                    />
+                    <QuickTile
+                        href="/dashboard/tutorials"
+                        title="Tutorials"
+                        desc="Video Guides"
+                        icon={<Video className="w-6 h-6" />}
+                        gradient="from-emerald-500 to-green-600 shadow-emerald-500/25"
+                    />
+                    <QuickTile
+                        href="/dashboard/support"
+                        title="Tickets"
+                        desc="Get Help Now"
+                        icon={<LifeBuoy className="w-6 h-6" />}
+                        gradient="from-orange-500 to-amber-600 shadow-orange-500/25"
+                    />
+                    <QuickTile
+                        href="/dashboard/premium/licenses"
+                        title="Premium Keys"
+                        desc="Keys & accounts"
+                        icon={<Key className="w-6 h-6" />}
+                        gradient="from-purple-500 to-indigo-600 shadow-purple-500/25"
+                    />
+                </div>
+            </div>
 
-                <div className="lg:col-span-2 space-y-5 sm:space-y-6">
+            <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
 
-                    {/* Serial Number Card */}
-                    <Card className="relative overflow-hidden border-2 border-primary/10 bg-gradient-to-br from-primary/5 via-background to-blue-500/5 p-5 sm:p-7 rounded-2xl md:rounded-3xl hover:border-primary/20 transition-all duration-300">
-                        <div className="flex items-start justify-between mb-5">
+                {/* ── Recent Activity & Downloads ── */}
+                <div className="lg:col-span-2 space-y-6">
+                    <Card className="rounded-3xl border-2 overflow-hidden">
+                        <div className="p-5 border-b bg-muted/30 flex items-center justify-between">
+                            <h3 className="font-bold flex items-center gap-2">
+                                <Activity className="w-4 h-4 text-primary" />
+                                Recent Downloads
+                            </h3>
+                            <Link href="/dashboard/software" className="text-xs font-bold text-primary hover:underline">View All</Link>
+                        </div>
+                        <div className="p-2">
+                            {user?.downloads && user.downloads.length > 0 ? (
+                                <div className="divide-y">
+                                    {user.downloads.map((dl) => (
+                                        <div key={dl.id} className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors rounded-xl group">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+                                                    <Download className="w-5 h-5" />
+                                                </div>
+                                                <div>
+                                                    <p className="font-bold text-sm text-foreground">{dl.softwareName}</p>
+                                                    <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">
+                                                        {new Date(dl.downloadedAt).toLocaleDateString('bn-BD', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <Button variant="ghost" size="sm" className="h-8 rounded-lg" asChild>
+                                                <Link href="/dashboard/software">Download Again</Link>
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="py-12 text-center text-muted-foreground italic text-sm">No downloads yet.</div>
+                            )}
+                        </div>
+                    </Card>
+
+                    {/* Support Status Inline */}
+                    <Card className="rounded-3xl border-2 bg-gradient-to-br from-orange-500/5 to-transparent p-6">
+                        <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
-                                <div className="p-2.5 bg-primary/10 rounded-xl">
-                                    <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                                <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center">
+                                    <LifeBuoy className="w-6 h-6 text-orange-500" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] sm:text-xs font-black text-muted-foreground uppercase tracking-widest">{t('userDashboard.registeredProduct')}</p>
-                                    <p className="text-xs text-muted-foreground/60 font-medium">Premium Support Pack</p>
+                                    <h3 className="font-black text-lg">Support Center</h3>
+                                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Active Tickets</p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
-                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                                <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Verified</span>
-                            </div>
+                            <Button className="rounded-xl font-bold px-6 shadow-lg shadow-primary/20" asChild>
+                                <Link href="/dashboard/support">New Ticket</Link>
+                            </Button>
                         </div>
 
-                        <div className="space-y-1 mb-6">
-                            <p className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-wider">{t('userDashboard.serialNumber')}</p>
-                            <p className="text-2xl sm:text-3xl md:text-4xl font-mono font-black tracking-tight text-foreground">
-                                {user?.serialNumber?.code || "N/A"}
-                            </p>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border/50">
-                            <div>
-                                <p className="text-[9px] sm:text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mb-1">{t('userDashboard.registrationDate')}</p>
-                                <p className="text-xs sm:text-sm font-bold">{user?.serialNumber?.assignedAt ? new Date(user.serialNumber.assignedAt).toLocaleDateString('bn-BD') : t('userDashboard.unknown')}</p>
+                        {user?.tickets && user.tickets.length > 0 ? (
+                            <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-orange-200/50 dark:border-orange-900/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div className="space-y-1">
+                                    <p className="text-sm font-bold truncate max-w-xs">{user.tickets[0].subject}</p>
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                                        <span className="text-[10px] font-black uppercase tracking-wider text-orange-600">Pending Reply</span>
+                                    </div>
+                                </div>
+                                <Button variant="outline" size="sm" className="rounded-lg h-9 border-2 font-black text-xs" asChild>
+                                    <Link href="/dashboard/support">Track Status</Link>
+                                </Button>
                             </div>
-                            <div>
-                                <p className="text-[9px] sm:text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mb-1">{t('userDashboard.status')}</p>
-                                <p className="text-xs sm:text-sm font-bold flex items-center gap-1.5">
-                                    <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                                    {t('userDashboard.active')}
-                                </p>
+                        ) : (
+                            <div className="bg-emerald-500/5 rounded-2xl p-5 border border-emerald-500/10 flex items-center gap-4">
+                                <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                                </div>
+                                <p className="text-xs font-bold text-emerald-800 dark:text-emerald-400">Everything looks great! No issues reported.</p>
                             </div>
-                        </div>
+                        )}
                     </Card>
-
-                    {/* Stats Row */}
-                    <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 sm:gap-4">
-                        <StatCard title={t('userDashboard.tutorialsWatched')} value={user?._count.activities || 0} total={videoCount} icon={<Video className="w-5 h-5" />} color="blue" />
-                        <StatCard title={t('userDashboard.softwareDownloads')} value={user?._count.downloads || 0} icon={<Download className="w-5 h-5" />} color="green" />
-                        <StatCard title={t('userDashboard.supportTickets')} value={user?._count.tickets || 0} icon={<LifeBuoy className="w-5 h-5" />} color="purple" />
-                    </div>
-
-                    {/* Quick Access */}
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                            <Zap className="w-4 h-4 text-amber-500" />
-                            <h3 className="font-bold text-base sm:text-lg tracking-tight">{t('userDashboard.quickAccess')}</h3>
-                        </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                            <QuickTile href="/dashboard/tutorials" title={t('userDashboard.tutorials')} icon={<Video className="w-5 h-5" />} gradient="from-blue-500 to-blue-600" />
-                            <QuickTile href="/dashboard/software" title={t('userDashboard.software')} icon={<Download className="w-5 h-5" />} gradient="from-emerald-500 to-green-600" />
-                            <QuickTile href="/dashboard/premium/accounts" title={t('userDashboard.premium')} icon={<Key className="w-5 h-5" />} gradient="from-purple-500 to-violet-600" />
-                            <QuickTile href="/dashboard/support" title={t('sidebar.support')} icon={<HeartHandshake className="w-5 h-5" />} gradient="from-rose-500 to-red-600" />
-                        </div>
-                    </div>
                 </div>
 
-                {/* Right Sidebar */}
-                <div className="space-y-5 sm:space-y-6">
-
-                    {/* Support Status */}
-                    <Card className="overflow-hidden border-2 rounded-2xl md:rounded-3xl hover:shadow-lg transition-all duration-300">
-                        <div className="p-4 sm:p-5 bg-gradient-to-r from-orange-500/10 to-amber-500/5 border-b border-orange-200/30 dark:border-orange-900/30">
-                            <h4 className="font-bold flex items-center gap-2 text-sm sm:text-base">
-                                <div className="p-1.5 bg-orange-500/10 rounded-lg">
-                                    <LifeBuoy className="w-4 h-4 text-orange-500" />
+                {/* ── Side Info ── */}
+                <div className="space-y-6">
+                    {/* Expiry Card */}
+                    <Card className="rounded-3xl border-2 p-6 bg-slate-900 text-white relative overflow-hidden group">
+                        <div className="relative z-10">
+                            <p className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-4">Account Snapshot</p>
+                            <div className="space-y-6">
+                                <div>
+                                    <p className="text-xs text-white/40 font-bold mb-1 uppercase tracking-widest">Valid Until</p>
+                                    <p className="text-xl font-black text-blue-400">
+                                        {user?.serialNumber?.expiresAt
+                                            ? new Date(user.serialNumber.expiresAt).toLocaleDateString('bn-BD', { day: '2-digit', month: 'long', year: 'numeric' })
+                                            : 'Lifetime Support'}
+                                    </p>
                                 </div>
-                                {t('userDashboard.supportStatus')}
-                            </h4>
+                                <div>
+                                    <p className="text-xs text-white/40 font-bold mb-1 uppercase tracking-widest">Serial Number</p>
+                                    <p className="font-mono font-bold tracking-[0.1em] text-sm break-all bg-white/5 p-3 rounded-xl border border-white/10">
+                                        {user?.serialNumber?.code || '••••-••••-••••-••••'}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div className="p-4 sm:p-5">
-                            {user?.tickets && user.tickets.length > 0 ? (
-                                <div className="space-y-3">
-                                    <div className="p-3 bg-orange-50 dark:bg-orange-950/20 rounded-xl text-xs sm:text-sm border border-orange-100 dark:border-orange-900/50">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-                                            <p className="font-bold text-orange-800 dark:text-orange-400">{t('userDashboard.activeTicket')}</p>
-                                        </div>
-                                        <p className="text-[10px] sm:text-xs text-orange-700/80 dark:text-orange-500/80 font-medium line-clamp-1 pl-4">&quot;{user.tickets[0].subject}&quot;</p>
-                                    </div>
-                                    <Link href="/dashboard/support" className="text-xs sm:text-sm text-primary hover:underline flex items-center gap-1 font-bold">
-                                        {t('userDashboard.viewTicket')} <ArrowUpRight className="w-3.5 h-3.5" />
-                                    </Link>
-                                </div>
-                            ) : (
-                                <div className="text-center py-4">
-                                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                                        <CheckCircle2 className="w-6 h-6 text-emerald-500" />
-                                    </div>
-                                    <p className="text-sm font-bold text-emerald-700 dark:text-emerald-400 mb-1">{t('userDashboard.allGood')}</p>
-                                    <p className="text-xs text-muted-foreground font-medium mb-4">{t('userDashboard.noPendingTickets')}</p>
-                                    <Link href="/dashboard/support">
-                                        <button className="w-full h-10 rounded-xl font-bold text-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
-                                            {t('userDashboard.openNewTicket')}
-                                        </button>
-                                    </Link>
-                                </div>
-                            )}
-                        </div>
+                        <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
                     </Card>
 
-                    {/* Activity Timeline */}
-                    <Card className="overflow-hidden flex flex-col h-full max-h-[500px] rounded-2xl md:rounded-3xl border-2 hover:shadow-lg transition-all duration-300">
-                        <div className="p-4 sm:p-5 border-b bg-muted/30 flex items-center justify-between">
-                            <h4 className="font-bold flex items-center gap-2 text-sm sm:text-base">
-                                <div className="p-1.5 bg-primary/10 rounded-lg">
-                                    <Clock className="w-4 h-4 text-primary" />
-                                </div>
-                                {t('userDashboard.recentLog')}
-                            </h4>
-                            <Link href="/dashboard/activity" className="text-[10px] sm:text-xs text-primary hover:underline font-bold uppercase tracking-wider flex items-center gap-1">
-                                {t('userDashboard.viewAll')} <ArrowUpRight className="w-3 h-3" />
-                            </Link>
-                        </div>
-                        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 sm:space-y-5 customize-scrollbar">
-                            {user?.activities && user.activities.length > 0 ? (
-                                user.activities.map((activity, idx) => (
-                                    <div key={activity.id} className="relative pl-5 sm:pl-6 pb-4 sm:pb-5 last:pb-0">
-                                        {idx !== user.activities.length - 1 && (
-                                            <div className="absolute left-[3px] top-[14px] bottom-[-16px] sm:bottom-[-18px] w-[2px] bg-gradient-to-b from-primary/30 to-transparent" />
-                                        )}
-                                        <div className="absolute left-0 top-[6px] w-2 h-2 rounded-full bg-primary ring-4 ring-primary/10" />
-                                        <div className="space-y-1">
-                                            <p className="text-xs sm:text-sm font-bold leading-none">{activity.action}</p>
-                                            {activity.details && (
-                                                <p className="text-[10px] sm:text-xs text-muted-foreground leading-snug font-medium line-clamp-2">{activity.details}</p>
-                                            )}
-                                            <p className="text-[9px] sm:text-[10px] text-muted-foreground/60 pt-1 font-bold uppercase tracking-tight">
-                                                {new Date(activity.createdAt).toLocaleString('bn-BD', {
-                                                    hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short'
-                                                })}
-                                            </p>
-                                        </div>
+                    {/* Simple Activity Feed */}
+                    <Card className="rounded-3xl border-2 h-full max-h-[400px] flex flex-col overflow-hidden">
+                        <div className="p-4 border-b bg-muted/50 font-black text-xs uppercase tracking-widest">System Logs</div>
+                        <div className="flex-1 overflow-y-auto p-4 space-y-4 customize-scrollbar">
+                            {user?.activities.map((a) => (
+                                <div key={a.id} className="flex gap-3 relative pb-4 last:pb-0">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 ring-4 ring-primary/10 flex-shrink-0" />
+                                    <div className="space-y-1">
+                                        <p className="text-xs font-bold text-foreground leading-tight">{a.action}</p>
+                                        <p className="text-[10px] text-muted-foreground leading-snug">{a.details}</p>
                                     </div>
-                                ))
-                            ) : (
-                                <div className="h-40 flex flex-col items-center justify-center text-center">
-                                    <Activity className="w-8 h-8 text-muted/30 mb-2" />
-                                    <p className="text-sm text-muted-foreground font-medium">{t('userDashboard.noRecords')}</p>
                                 </div>
-                            )}
+                            ))}
                         </div>
                     </Card>
                 </div>
@@ -243,43 +286,20 @@ export function UserDashboardClient({ user, videoCount }: { user: UserData | nul
     )
 }
 
-/* ── Sub Components ── */
+/* ── Refined Sub Components ── */
 
-function StatCard({ title, value, total, icon, color }: { title: string, value: number, total?: number, icon: React.ReactNode, color: string }) {
-    const colorMap: any = {
-        blue: { bg: 'bg-blue-500/10', text: 'text-blue-600 dark:text-blue-400', ring: 'ring-blue-500/20' },
-        green: { bg: 'bg-emerald-500/10', text: 'text-emerald-600 dark:text-emerald-400', ring: 'ring-emerald-500/20' },
-        purple: { bg: 'bg-purple-500/10', text: 'text-purple-600 dark:text-purple-400', ring: 'ring-purple-500/20' },
-    }
-    const c = colorMap[color] || colorMap.blue
-
-    return (
-        <Card className="p-4 sm:p-5 hover:shadow-md transition-all duration-300 border-2 hover:border-primary/20 rounded-2xl group">
-            <div className="flex items-center justify-between mb-3">
-                <div className={`p-2 rounded-xl ${c.bg} ${c.text} ring-1 ${c.ring} group-hover:scale-110 transition-transform`}>
-                    {icon}
-                </div>
-                {total && total > 0 && (
-                    <span className="text-[9px] font-black bg-primary/10 text-primary px-2.5 py-1 rounded-full uppercase tracking-tight">
-                        {Math.round((value / total) * 100)}%
-                    </span>
-                )}
-            </div>
-            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mb-1">{title}</p>
-            <p className="text-2xl sm:text-3xl font-black tabular-nums tracking-tight">{value}</p>
-        </Card>
-    )
-}
-
-function QuickTile({ href, title, icon, gradient }: { href: string, title: string, icon: React.ReactNode, gradient: string }) {
+function QuickTile({ href, title, desc, icon, gradient }: { href: string, title: string, desc: string, icon: React.ReactNode, gradient: string }) {
     return (
         <Link href={href}>
-            <div className="group relative p-4 sm:p-5 rounded-2xl bg-card border-2 hover:border-primary/30 transition-all duration-300 hover:shadow-lg cursor-pointer text-center h-full">
-                <div className={`w-12 h-12 sm:w-14 sm:h-14 mx-auto rounded-2xl bg-gradient-to-br ${gradient} text-white flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:shadow-xl transition-all duration-300 mb-3`}>
+            <div className="group relative p-5 rounded-3xl bg-card border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-2xl cursor-pointer h-full overflow-hidden">
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${gradient} text-white flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 mb-4`}>
                     {icon}
                 </div>
-                <p className="text-xs sm:text-sm font-bold tracking-tight">{title}</p>
-                <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground/30 group-hover:text-primary absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all" />
+                <div className="space-y-0.5">
+                    <p className="text-sm font-black tracking-tight">{title}</p>
+                    <p className="text-[10px] text-muted-foreground font-bold tracking-tight line-clamp-1">{desc}</p>
+                </div>
+                <div className="absolute -top-6 -right-6 w-16 h-16 bg-primary/5 rounded-full group-hover:scale-[2] transition-transform duration-500" />
             </div>
         </Link>
     )

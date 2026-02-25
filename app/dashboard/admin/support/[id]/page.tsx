@@ -23,6 +23,7 @@ import { ManagementNotes } from "@/components/admin/management-notes";
 import { QuickReplyManager } from "@/components/admin/quick-reply-manager";
 import { getQuickReplies } from "@/lib/actions/quick-reply-actions";
 import { TicketMessageReactions } from "@/components/ticket-message-reactions";
+import { VideoCallButton } from "@/components/video-call-button";
 
 export default async function AdminTicketDetailPage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
     const params = await paramsPromise;
@@ -89,6 +90,11 @@ export default async function AdminTicketDetailPage({ params: paramsPromise }: {
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
+                    <VideoCallButton
+                        ticketId={ticket.id}
+                        isAdmin={true}
+                        userName={session.user.name || 'Admin'}
+                    />
                     <QuickReplyManager quickReplies={quickReplies} />
                     <TicketStatusSwitcher ticketId={ticket.id} currentStatus={ticket.status} />
                     <TicketPriorityToggle ticketId={ticket.id} currentPriority={ticket.priority} />

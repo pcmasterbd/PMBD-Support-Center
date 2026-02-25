@@ -2,9 +2,12 @@
 
 import { useState, useMemo } from 'react'
 import { Card } from '@/components/ui/card'
-import { Video, Clock, Eye, Play, Sparkles, ChevronRight, Lock, LayoutGrid } from 'lucide-react'
+import { Video, Clock, Eye, Play, Sparkles, ChevronRight, Lock, LayoutGrid, Search } from 'lucide-react'
 import { VideoPlayer } from './video-player'
 import { cn } from '@/lib/utils'
+import { Input } from './ui/input'
+import { useLanguage } from '@/lib/language-context'
+import { incrementVideoViewCount } from '@/lib/actions/content-actions'
 
 interface Video {
     id: string
@@ -31,8 +34,17 @@ interface TutorialListProps {
 }
 
 export function TutorialList({ categories }: TutorialListProps) {
+    const { t } = useLanguage()
     const [selectedVideo, setSelectedVideo] = useState<any>(null)
     const [activeCategory, setActiveCategory] = useState<string>('all')
+    const [searchQuery, setSearchQuery] = useState('')
+
+    const handleVideoSelect = (video: any) => {
+        setSelectedVideo(video)
+        if (video?.id) {
+            incrementVideoViewCount(video.id)
+        }
+    }
 
     // Find the first video to use as featured if available
     const featuredVideo = useMemo(() => {
@@ -45,9 +57,27 @@ export function TutorialList({ categories }: TutorialListProps) {
     }, [categories])
 
     const filteredCategories = useMemo(() => {
-        if (activeCategory === 'all') return categories
-        return categories.filter(cat => cat.id === activeCategory)
-    }, [categories, activeCategory])
+        let result = categories
+
+        // Filter by Category
+        if (activeCategory !== 'all') {
+            result = result.filter(cat => cat.id === activeCategory)
+        }
+
+        // Filter by Search Query
+        if (searchQuery.trim()) {
+            const query = searchQuery.toLowerCase().trim()
+            result = result.map(cat => ({
+                ...cat,
+                videos: cat.videos.filter(v =>
+                    v.title.toLowerCase().includes(query) ||
+                    (v.description && v.description.toLowerCase().includes(query))
+                )
+            })).filter(cat => cat.videos.length > 0)
+        }
+
+        return result
+    }, [categories, activeCategory, searchQuery])
 
     return (
         <div className="space-y-10 pb-20">
@@ -55,7 +85,7 @@ export function TutorialList({ categories }: TutorialListProps) {
             {featuredVideo && (
                 <div
                     className="relative w-full aspect-[16/9] sm:aspect-[21/9] md:aspect-[21/7] rounded-2xl sm:rounded-3xl overflow-hidden group cursor-pointer shadow-xl bg-zinc-950 border border-white/10"
-                    onClick={() => setSelectedVideo(featuredVideo)}
+                    onClick={() => handleVideoSelect(featuredVideo)}
                 >
                     <img
                         src={featuredVideo.thumbnailUrl || `https://img.youtube.com/vi/${featuredVideo.youtubeId}/maxresdefault.jpg`}
@@ -104,33 +134,48 @@ export function TutorialList({ categories }: TutorialListProps) {
                 </div>
             )}
 
-            {/* Category Filter */}
-            <div className="flex items-center gap-1.5 sm:gap-2 p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl sm:rounded-2xl w-fit max-w-full overflow-x-auto scrollbar-hide">
-                <button
-                    onClick={() => setActiveCategory('all')}
-                    className={cn(
-                        "flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-semibold transition-all whitespace-nowrap",
-                        activeCategory === 'all'
-                            ? "bg-white dark:bg-zinc-800 text-primary shadow-sm ring-1 ring-black/5"
-                            : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
-                    )}
-                >
-                    <LayoutGrid className="w-4 h-4" /> সব টিউটোরিয়াল
-                </button>
-                {categories.map((cat) => (
+            {/* Filters & Search */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                {/* Category Filter */}
+                <div className="flex items-center gap-1.5 sm:gap-2 p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl sm:rounded-2xl w-fit max-w-full overflow-x-auto scrollbar-hide">
                     <button
-                        key={cat.id}
-                        onClick={() => setActiveCategory(cat.id)}
+                        onClick={() => setActiveCategory('all')}
                         className={cn(
                             "flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-semibold transition-all whitespace-nowrap",
-                            activeCategory === cat.id
+                            activeCategory === 'all'
                                 ? "bg-white dark:bg-zinc-800 text-primary shadow-sm ring-1 ring-black/5"
                                 : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
                         )}
                     >
-                        {cat.name}
+                        <LayoutGrid className="w-4 h-4" /> সব টিউটোরিয়াল
                     </button>
-                ))}
+                    {categories.map((cat) => (
+                        <button
+                            key={cat.id}
+                            onClick={() => setActiveCategory(cat.id)}
+                            className={cn(
+                                "flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-semibold transition-all whitespace-nowrap",
+                                activeCategory === cat.id
+                                    ? "bg-white dark:bg-zinc-800 text-primary shadow-sm ring-1 ring-black/5"
+                                    : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                            )}
+                        >
+                            {cat.name}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Search Bar */}
+                <div className="relative w-full md:max-w-md">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        type="text"
+                        placeholder={t('tutorialsPage.searchPlaceholder')}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10 h-11 rounded-xl bg-zinc-100 dark:bg-zinc-900 border-transparent focus:ring-primary/20 transition-all font-medium"
+                    />
+                </div>
             </div>
 
             {/* Tutorials Grid */}
@@ -157,7 +202,7 @@ export function TutorialList({ categories }: TutorialListProps) {
                                         "group relative flex flex-col bg-white dark:bg-zinc-950 rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 transition-all duration-300 hover:shadow-xl hover:border-primary/20 cursor-pointer",
                                         selectedVideo?.id === video.id ? "ring-2 ring-primary border-transparent" : ""
                                     )}
-                                    onClick={() => setSelectedVideo(video)}
+                                    onClick={() => handleVideoSelect(video)}
                                 >
                                     <div className="relative aspect-video overflow-hidden">
                                         <img
@@ -203,13 +248,13 @@ export function TutorialList({ categories }: TutorialListProps) {
                 ))}
             </div>
 
-            {categories.length === 0 && (
+            {filteredCategories.length === 0 && (
                 <div className="p-10 sm:p-20 text-center bg-zinc-900/50 rounded-2xl sm:rounded-[3rem] border border-white/5 space-y-6">
                     <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto ring-1 ring-primary/20">
                         <Video className="w-12 h-12 text-primary" />
                     </div>
                     <div className="space-y-2">
-                        <p className="text-zinc-300 text-xl font-black">No Tutorials Found</p>
+                        <p className="text-zinc-300 text-xl font-black">{t('tutorialsPage.noTutorialsFound')}</p>
                         <p className="text-zinc-500 text-sm font-medium">Please check back later for new content.</p>
                     </div>
                 </div>
@@ -220,7 +265,7 @@ export function TutorialList({ categories }: TutorialListProps) {
                 video={selectedVideo}
                 isOpen={!!selectedVideo}
                 onClose={() => setSelectedVideo(null)}
-                onSelectVideo={(video: any) => setSelectedVideo(video)}
+                onSelectVideo={handleVideoSelect}
                 relatedVideos={selectedVideo ? categories.find(c => c.id === selectedVideo.categoryId)?.videos.filter((v: Video) => v.id !== selectedVideo.id) || [] : []}
             />
         </div>

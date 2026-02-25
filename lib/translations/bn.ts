@@ -21,6 +21,7 @@ export const bn = {
         premiumAccounts: 'প্রিমিয়াম একাউন্ট',
         licenseKeys: 'লাইসেন্স কী',
         support: 'সাপোর্ট',
+        activationRequests: 'অ্যাক্টিভেশন রিকোয়েস্ট',
         profile: 'প্রোফাইল',
         adminDashboard: 'অ্যাডমিন ড্যাশবোর্ড',
         supportManagement: 'সাপোর্ট ম্যানেজমেন্ট',
@@ -87,6 +88,7 @@ export const bn = {
         goodMorning: 'শুভ সকাল',
         goodAfternoon: 'শুভ অপরাহ্ন',
         goodEvening: 'শুভ সন্ধ্যা',
+        hello: 'হ্যালো',
         premiumUser: 'প্রিমিয়াম ইউজার',
         welcomeDesc: 'আপনার সাপোর্ট প্যানেলে স্বাগতম। এখান থেকে সফটওয়্যার, টিউটোরিয়াল এবং প্রিমিয়াম রিসোর্স অ্যাক্সেস করুন।',
         registeredProduct: 'আপনার নিবন্ধিত পণ্য',
@@ -289,6 +291,8 @@ export const bn = {
     tutorialsPage: {
         title: 'ভিডিও টিউটোরিয়াল',
         subtitle: 'বাংলায় সম্পূর্ণ গাইড - Windows, Linux এবং আরও অনেক কিছু',
+        searchPlaceholder: 'ভিডিও টিউটোরিয়াল সার্চ করুন...',
+        noTutorialsFound: 'আপনার সার্চের সাথে মিলে এমন কোনো টিউটোরিয়াল পাওয়া যায়নি।',
     },
 
     // ── Premium Accounts Page ──
@@ -366,5 +370,28 @@ export const bn = {
         adminReplyVisibility: 'আপনার উত্তর ইউজার দেখতে পাবেন।',
         attachment: 'সংযুক্ত ফাইল',
         viewAttachment: 'সংযুক্ত ফাইলটি দেখুন',
+    },
+
+    // ── Notifications ──
+    notifications: {
+        title: 'নোটিফিকেশন',
+        markAsRead: 'পঠিত হিসেবে চিহ্নিত করুন',
+        markAllAsRead: 'সবগুলো পঠিত হিসেবে চিহ্নিত করুন',
+        noNotifications: 'কোনো নোটিফিকেশন নেই',
+        newSoftware: 'নতুন সফটওয়্যার যুক্ত হয়েছে',
+        newTutorial: 'নতুন টিউটোরিয়াল যুক্ত হয়েছে',
+        expirationWarning: 'অ্যাকাউন্টের মেয়াদ শেষ হতে চলেছে',
+    },
+
+    // ── Video Call ──
+    videoCall: {
+        start: 'ভিডিও কল শুরু করুন',
+        join: 'কলে যোগ দিন',
+        incoming: 'একজন বিশেষজ্ঞ আপনাকে ভিডিও কলে আমন্ত্রণ জানাচ্ছেন',
+        end: 'কল শেষ করুন',
+        camera: 'ক্যামেরা',
+        microphone: 'মাইক্রোফোন',
+        screenShare: 'স্ক্রিন শেয়ার',
+        connecting: 'সংযুক্ত হচ্ছে...',
     },
 } as const

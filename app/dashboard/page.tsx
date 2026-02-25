@@ -17,6 +17,15 @@ export default async function DashboardPage() {
                 take: 5,
                 orderBy: { createdAt: 'desc' },
             },
+            downloads: {
+                take: 5,
+                orderBy: { downloadedAt: 'desc' },
+                include: {
+                    software: {
+                        select: { name: true }
+                    }
+                }
+            },
             tickets: {
                 where: { status: 'OPEN' },
                 take: 1,
@@ -44,6 +53,7 @@ export default async function DashboardPage() {
         serialNumber: user.serialNumber ? {
             code: user.serialNumber.code,
             assignedAt: user.serialNumber.assignedAt?.toISOString() || null,
+            expiresAt: user.serialNumber.expiresAt?.toISOString() || null,
             packageType: user.serialNumber.packageType,
         } : null,
         activities: user.activities.map(a => ({
@@ -51,6 +61,11 @@ export default async function DashboardPage() {
             action: a.action,
             details: a.details,
             createdAt: a.createdAt.toISOString(),
+        })),
+        downloads: user.downloads.map(d => ({
+            id: d.id,
+            softwareName: d.software.name,
+            downloadedAt: d.downloadedAt.toISOString(),
         })),
         tickets: user.tickets.map(t => ({
             subject: t.subject,

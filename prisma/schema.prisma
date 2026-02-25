@@ -34,6 +34,7 @@ model User {
   activities       UserActivity[]
   downloads        UserDownload[]
   favorites        UserFavorite[]
+  videoProgress    UserVideoProgress[]
   serialNumber     SerialNumber?           @relation(fields: [serialId], references: [id])
 
   @@map("users")
@@ -110,22 +111,39 @@ model Category {
 }
 
 model VideoTutorial {
-  id           String         @id @default(cuid())
+  id           String              @id @default(cuid())
   title        String
   description  String?
-  youtubeId    String
+  provider     String              @default("YOUTUBE") // YOUTUBE or LOCAL
+  youtubeId    String?             @unique
+  videoUrl     String? // For custom uploads
   categoryId   String
   thumbnailUrl String?
   duration     Int?
-  viewCount    Int            @default(0)
-  isPremium    Boolean        @default(false)
-  displayOrder Int            @default(0)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  favorites    UserFavorite[] @relation("VideoFavorites")
-  category     Category       @relation(fields: [categoryId], references: [id])
+  viewCount    Int                 @default(0)
+  isPremium    Boolean             @default(false)
+  displayOrder Int                 @default(0)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  favorites    UserFavorite[]      @relation("VideoFavorites")
+  progress     UserVideoProgress[]
+  category     Category            @relation(fields: [categoryId], references: [id])
 
   @@map("video_tutorials")
+}
+
+model UserVideoProgress {
+  id                String        @id @default(cuid())
+  userId            String
+  videoId           String
+  lastPosition      Float         @default(0) // Seconds
+  watchedPercentage Int           @default(0)
+  lastViewedAt      DateTime      @default(now())
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video             VideoTutorial @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, videoId])
+  @@map("user_video_progress")
 }
 
 model Software {
@@ -230,6 +248,7 @@ model Notification {
   title     String
   message   String
   type      String
+  link      String?
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])

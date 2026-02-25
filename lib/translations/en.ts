@@ -21,6 +21,7 @@ export const en = {
         premiumAccounts: 'Premium Accounts',
         licenseKeys: 'License Keys',
         support: 'Support',
+        activationRequests: 'Activation Requests',
         profile: 'Profile',
         adminDashboard: 'Admin Dashboard',
         supportManagement: 'Support Management',
@@ -289,6 +290,8 @@ export const en = {
     tutorialsPage: {
         title: 'Video Tutorials',
         subtitle: 'Complete guide in Bangla - Windows, Linux, and more',
+        searchPlaceholder: 'Search tutorials...',
+        noTutorialsFound: 'No tutorials found matching your search.',
     },
 
     // ── Premium Accounts Page ──
@@ -366,5 +369,28 @@ export const en = {
         adminReplyVisibility: 'Your reply will be visible to the user.',
         attachment: 'Attachment',
         viewAttachment: 'View Attachment',
+    },
+
+    // ── Notifications ──
+    notifications: {
+        title: 'Notifications',
+        markAsRead: 'Mark as read',
+        markAllAsRead: 'Mark all as read',
+        noNotifications: 'No notifications',
+        newSoftware: 'New Software Available',
+        newTutorial: 'New Tutorial Added',
+        expirationWarning: 'Account Expiring Soon',
+    },
+
+    // ── Video Call ──
+    videoCall: {
+        start: 'Start Video Call',
+        join: 'Join Call',
+        incoming: 'An expert is inviting you to a video call',
+        end: 'End Call',
+        camera: 'Camera',
+        microphone: 'Microphone',
+        screenShare: 'Screen Share',
+        connecting: 'Connecting...',
     },
 } as const

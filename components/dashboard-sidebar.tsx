@@ -39,14 +39,15 @@ export function DashboardSidebar({ userRole, userName, userEmail, mobile, isOpen
         { titleKey: 'sidebar.activityLog', href: '/dashboard/activity', icon: FileText },
         { titleKey: 'sidebar.tutorials', href: '/dashboard/tutorials', icon: Video },
         { titleKey: 'sidebar.software', href: '/dashboard/software', icon: Download },
-        { titleKey: 'sidebar.premiumAccounts', href: '/dashboard/premium/accounts', icon: CreditCard },
-        { titleKey: 'sidebar.licenseKeys', href: '/dashboard/premium/licenses', icon: Key },
+        { titleKey: 'sidebar.premiumAccounts', href: '/dashboard/premium/accounts', icon: CreditCard, role: 'PREMIUM' },
+        { titleKey: 'sidebar.licenseKeys', href: '/dashboard/premium/licenses', icon: Key, role: 'PREMIUM' },
         { titleKey: 'sidebar.support', href: '/dashboard/support', icon: HelpCircle },
         { titleKey: 'sidebar.profile', href: '/dashboard/profile', icon: Settings },
     ]
 
     const adminMenuItems = [
         { titleKey: 'sidebar.adminDashboard', href: '/dashboard/admin', icon: Shield },
+        { titleKey: 'sidebar.activationRequests', href: '/dashboard/admin/activations', icon: Shield },
         { titleKey: 'sidebar.supportManagement', href: '/dashboard/admin/support', icon: HelpCircle },
         { titleKey: 'sidebar.userManagement', href: '/dashboard/admin/users', icon: Users },
         { titleKey: 'sidebar.softwareContent', href: '/dashboard/admin/content/software', icon: Download },
@@ -157,6 +158,10 @@ export function DashboardSidebar({ userRole, userName, userEmail, mobile, isOpen
                     <div className="space-y-0.5 sm-std:space-y-1 px-1.5 sm-std:px-2">
                         {menuItems.map((item) => {
                             if (isAdmin && item.href === '/dashboard' && pathname.startsWith('/dashboard/admin')) return null
+
+                            // Check if item requires PREMIUM role but user is FREE
+                            if (!isAdmin && (item as any).role === 'PREMIUM' && userRole === 'FREE') return null
+
                             return renderMenuItem(item)
                         })}
                     </div>

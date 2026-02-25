@@ -21,15 +21,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 }
 
                 // Try to find user by Email, Phone, or Serial Number
-                const user = await prisma.user.findFirst({
+                let user = await prisma.user.findFirst({
                     where: {
                         OR: [
                             { email: identifier },
-                            { phone: identifier },
-                            { serialNumber: { code: identifier } }
+                            { phone: identifier }
                         ]
-                    }
+                    },
+                    include: { serialNumber: true }
                 })
+
+                if (!user) {
+                    // Try by serial code
+                    user = await prisma.user.findFirst({
+                        where: {
+                            serialNumber: {
+                                code: identifier
+                            }
+                        },
+                        include: { serialNumber: true }
+                    })
+                }
 
                 if (!user || !user.passwordHash) {
                     return null
@@ -52,6 +64,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     email: user.email,
                     role: user.role,
                     avatarUrl: user.avatarUrl,
+                    serialId: user.serialId,
+                    expiresAt: user.serialNumber?.expiresAt?.toISOString() || null,
                 }
             },
         }),

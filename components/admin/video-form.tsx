@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { createVideo, updateVideo } from "@/lib/actions/content-actions"
 import { useState } from "react"
 import { useFormStatus } from "react-dom"
@@ -54,6 +55,16 @@ export function VideoForm({ video, categories, onSuccess }: VideoFormProps) {
             <div className="space-y-2">
                 <Label htmlFor="youtubeId">YouTube Video ID</Label>
                 <Input id="youtubeId" name="youtubeId" defaultValue={video?.youtubeId} required placeholder="e.g. dQw4w9WgXcQ" />
+            </div>
+
+            <div className="space-y-2">
+                <Label htmlFor="videoUrl">Custom Video URL (Optional)</Label>
+                <Input id="videoUrl" name="videoUrl" defaultValue={video?.videoUrl} placeholder="e.g. https://storage.com/video.mp4" />
+            </div>
+
+            <div className="space-y-2">
+                <Label htmlFor="description">Description</Label>
+                <Textarea id="description" name="description" defaultValue={video?.description} placeholder="Enter video description..." className="min-h-[100px]" />
             </div>
 
             <div className="space-y-2">

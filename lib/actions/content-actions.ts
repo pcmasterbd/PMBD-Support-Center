@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
+import { NotificationService } from "@/lib/services/notification-service"
 
 // Category Actions
 export async function createCategory(formData: FormData) {
@@ -45,6 +46,15 @@ export async function createSoftware(formData: FormData) {
     await prisma.software.create({
         data: { name, version, description, categoryId, fileUrl, isPremium }
     })
+
+    // Trigger global notification
+    await NotificationService.createGlobal({
+        title: `New Software: ${name}`,
+        message: description?.substring(0, 100) || "New software added to the center.",
+        type: 'SOFTWARE',
+        link: '/dashboard/software'
+    })
+
     revalidatePath('/dashboard/admin/content/software')
 }
 
@@ -72,24 +82,37 @@ export async function deleteSoftware(id: string) {
 export async function createVideo(formData: FormData) {
     const title = formData.get('title') as string
     const youtubeId = formData.get('youtubeId') as string
+    const description = formData.get('description') as string
+    const videoUrl = formData.get('videoUrl') as string
     const categoryId = formData.get('categoryId') as string
     const isPremium = formData.get('isPremium') === 'true'
 
     await prisma.videoTutorial.create({
-        data: { title, youtubeId, categoryId, isPremium }
+        data: { title, youtubeId, description, videoUrl, categoryId, isPremium }
     })
+
+    // Trigger global notification
+    await NotificationService.createGlobal({
+        title: `New Tutorial: ${title}`,
+        message: description?.substring(0, 100) || "New video tutorial added.",
+        type: 'VIDEO',
+        link: '/dashboard/tutorials'
+    })
+
     revalidatePath('/dashboard/admin/content/videos')
 }
 
 export async function updateVideo(id: string, formData: FormData) {
     const title = formData.get('title') as string
     const youtubeId = formData.get('youtubeId') as string
+    const description = formData.get('description') as string
+    const videoUrl = formData.get('videoUrl') as string
     const categoryId = formData.get('categoryId') as string
     const isPremium = formData.get('isPremium') === 'true'
 
     await prisma.videoTutorial.update({
         where: { id },
-        data: { title, youtubeId, categoryId, isPremium }
+        data: { title, youtubeId, description, videoUrl, categoryId, isPremium }
     })
     revalidatePath('/dashboard/admin/content/videos')
 }
@@ -97,4 +120,23 @@ export async function updateVideo(id: string, formData: FormData) {
 export async function deleteVideo(id: string) {
     await prisma.videoTutorial.delete({ where: { id } })
     revalidatePath('/dashboard/admin/content/videos')
+}
+
+export async function incrementVideoViewCount(id: string) {
+    await prisma.videoTutorial.update({
+        where: { id },
+        data: { viewCount: { increment: 1 } }
+    })
+    revalidatePath('/dashboard/tutorials')
+    revalidatePath('/dashboard/admin/content/videos')
+}
+
+export async function getTutorials(limit = 4) {
+    return await prisma.videoTutorial.findMany({
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+            category: true
+        }
+    })
 }

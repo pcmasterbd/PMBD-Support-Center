@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { ThemeToggle } from "./theme-toggle"
 import { LanguageToggle } from "./language-toggle"
+import { NotificationBell } from "./notification-bell"
 import { Button } from "./ui/button"
 import { Menu, X, ArrowRight, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -56,6 +57,7 @@ export function Navbar() {
                 </div>
 
                 <div className="flex items-center space-x-1 sm:space-x-2">
+                    <NotificationBell />
                     <ThemeToggle />
 
                     <Button variant="ghost" size="sm" asChild className="h-9 px-2 sm:px-4 font-semibold hover:bg-muted whitespace-nowrap">

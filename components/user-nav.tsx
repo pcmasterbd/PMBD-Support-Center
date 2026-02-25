@@ -30,6 +30,7 @@ interface UserNavProps {
         image?: string | null
         role?: string | null
         packageType?: string | null
+        expiresAt?: Date | null
     }
     signOutAction: () => Promise<void>
 }
@@ -69,6 +70,14 @@ export function UserNav({ user, signOutAction }: UserNavProps) {
                     <p className="text-xs font-bold text-slate-400 dark:text-slate-500 tracking-tight">
                         {user.role === 'SUPERADMIN' ? 'Super Admin' : user.role === 'ADMIN' ? 'Admin' : 'Customer'}
                     </p>
+                    {user.expiresAt && (
+                        <div className="mt-2 flex items-center justify-center gap-1.5 px-3 py-1 bg-red-500/5 text-red-500 rounded-lg border border-red-500/10">
+                            <span className="text-[10px] font-black uppercase tracking-tight">Expires:</span>
+                            <span className="text-[10px] font-bold">
+                                {new Date(user.expiresAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                            </span>
+                        </div>
+                    )}
                 </div>
 
                 <DropdownMenuSeparator className="mx-2 my-1 opacity-50" />

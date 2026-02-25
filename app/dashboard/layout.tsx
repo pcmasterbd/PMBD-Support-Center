@@ -30,7 +30,8 @@ export default async function DashboardLayout({
             role: true,
             serialNumber: {
                 select: {
-                    packageType: true
+                    packageType: true,
+                    expiresAt: true
                 }
             }
         }
@@ -38,7 +39,7 @@ export default async function DashboardLayout({
 
     return (
         <div className="flex min-h-screen">
-            <DashboardSidebar userRole={session.user.role} />
+            <DashboardSidebar userRole={dbUser?.role || session.user.role} />
 
             <div className="flex-1 min-w-0 flex flex-col">
                 <DashboardHeader
@@ -47,6 +48,7 @@ export default async function DashboardLayout({
                     userImage={dbUser?.avatarUrl}
                     userRole={dbUser?.role || session.user.role}
                     packageType={dbUser?.serialNumber?.packageType}
+                    expiresAt={dbUser?.serialNumber?.expiresAt}
                     signOutAction={async () => {
                         'use server'
                         await signOut({ redirectTo: '/' })

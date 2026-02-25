@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { auth } from "@/auth"
+import { NotificationService } from "@/lib/services/notification-service"
 
 // Public/User: Get active announcements
 export async function getActiveAnnouncements() {
@@ -64,6 +65,14 @@ export async function createAnnouncement(data: {
                 isActive: data.isActive,
                 expiresAt: data.expiresAt ? new Date(data.expiresAt) : null
             }
+        })
+
+        // Trigger global notification
+        await NotificationService.createGlobal({
+            title: `New Announcement: ${data.title}`,
+            message: data.message.substring(0, 100) + (data.message.length > 100 ? '...' : ''),
+            type: 'ANNOUNCEMENT',
+            link: '/dashboard'
         })
 
         revalidatePath('/dashboard')

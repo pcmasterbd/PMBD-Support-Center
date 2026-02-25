@@ -8,6 +8,7 @@ import { notFound, redirect } from "next/navigation";
 import TicketReplyForm from "./reply-form";
 import { TicketFeedback } from "@/components/ticket-feedback";
 import { TicketMessageReactions } from "@/components/ticket-message-reactions";
+import { VideoCallButton } from "@/components/video-call-button";
 
 export default async function TicketDetailPage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
     const params = await paramsPromise;
@@ -74,6 +75,11 @@ export default async function TicketDetailPage({ params: paramsPromise }: { para
                         </div>
                     </div>
                 </div>
+                <VideoCallButton
+                    ticketId={ticket.id}
+                    isAdmin={false}
+                    userName={session.user.name || 'User'}
+                />
             </div>
 
             <div className="space-y-6">

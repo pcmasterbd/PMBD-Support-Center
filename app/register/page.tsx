@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Shield, ArrowRight, Loader2, Mail, CheckCircle2 } from 'lucide-react'
+import { Shield, ArrowRight, Loader2, Mail, CheckCircle2, QrCode } from 'lucide-react'
 import { useLanguage } from '@/lib/language-context'
 import { LanguageToggle } from '@/components/language-toggle'
 
@@ -18,9 +18,6 @@ export default function RegisterPage() {
     const [loading, setLoading] = useState(false)
     const [verifying, setVerifying] = useState(false)
 
-    useEffect(() => {
-        router.push('/login')
-    }, [router])
     const [error, setError] = useState('')
     const [formData, setFormData] = useState({
         name: '',
@@ -204,20 +201,30 @@ export default function RegisterPage() {
 
                     <div className="space-y-4 col-span-1">
                         <div className="space-y-2">
-                            <Label htmlFor="serialNumber">{t('register.serialNumber')}</Label>
+                            <Label htmlFor="serialNumber" className="flex items-center justify-between">
+                                <span>{t('register.serialNumber')}</span>
+                                <button
+                                    type="button"
+                                    onClick={() => alert('QR Scanner coming soon!')}
+                                    className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-1 hover:underline"
+                                >
+                                    <QrCode className="w-3 h-3" />
+                                    Scan QR
+                                </button>
+                            </Label>
                             <Input
                                 id="serialNumber"
                                 name="serialNumber"
                                 type="text"
-                                placeholder={t('register.serialPlaceholder')}
+                                placeholder="PCMBD-YYYY-XXXX-XXXX"
                                 value={formData.serialNumber}
                                 onChange={handleChange}
                                 required
                                 disabled={loading}
-                                className="font-mono"
+                                className="font-mono text-center tracking-widest uppercase h-11 border-2 focus:border-primary rounded-xl"
                             />
-                            <p className="text-[10px] text-muted-foreground">
-                                Format: PCMBD-YYYY-XXXX-XXXX
+                            <p className="text-[10px] text-muted-foreground font-medium">
+                                এটি আপনার পেনড্রাইভ কার্ডে পাবেন
                             </p>
                         </div>
 

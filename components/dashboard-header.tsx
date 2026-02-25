@@ -16,14 +16,16 @@ interface DashboardHeaderProps {
     userImage?: string | null
     userRole?: string
     packageType?: string | null
+    expiresAt?: Date | null
     signOutAction: () => Promise<void>
 }
 
 import { DashboardSidebar } from './dashboard-sidebar'
 import { GlobalSearch } from './global-search'
 import { UserNav } from './user-nav'
+import { NotificationBell } from './notification-bell'
 
-export function DashboardHeader({ userName, userEmail, userImage, userRole, packageType, signOutAction }: DashboardHeaderProps) {
+export function DashboardHeader({ userName, userEmail, userImage, userRole, packageType, expiresAt, signOutAction }: DashboardHeaderProps) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     const pathname = usePathname()
     const isAdmin = userRole === 'ADMIN' || userRole === 'SUPERADMIN'
@@ -53,6 +55,7 @@ export function DashboardHeader({ userName, userEmail, userImage, userRole, pack
                             <GlobalSearch />
                         </div>
                         <LanguageToggle />
+                        <NotificationBell />
                         <ThemeToggle />
                         <UserNav
                             user={{
@@ -60,7 +63,8 @@ export function DashboardHeader({ userName, userEmail, userImage, userRole, pack
                                 email: userEmail,
                                 image: userImage,
                                 role: userRole,
-                                packageType: packageType
+                                packageType: packageType,
+                                expiresAt: expiresAt
                             }}
                             signOutAction={signOutAction}
                         />

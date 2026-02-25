@@ -77,18 +77,22 @@ export async function POST(request: NextRequest) {
                     email,
                     phone,
                     passwordHash,
-                    serialId: serial.id,
                     role: role,
                 },
             })
 
-            await tx.serialNumber.update({
-                where: { id: serial.id },
-                data: {
-                    status: 'ASSIGNED',
-                    assignedAt: new Date(),
-                },
-            })
+            // Only create activation request for regular users
+            if (role !== 'SUPERADMIN') {
+                await tx.accountRequest.create({
+                    data: {
+                        userId: newUser.id,
+                        resourceType: 'SERIAL_ACTIVATION',
+                        resourceName: serialNumber,
+                        reason: `Registration activation with Serial: ${serialNumber}`,
+                        status: 'PENDING'
+                    }
+                })
+            }
 
             return newUser
         })

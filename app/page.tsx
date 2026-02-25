@@ -17,6 +17,7 @@ import {
   Sparkles
 } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+import { TutorialSection } from "@/components/tutorial-section"
 
 export default function HomePage() {
   const { t } = useLanguage()
@@ -118,6 +119,8 @@ export default function HomePage() {
           </Button>
         </div>
       </section>
+
+      <TutorialSection />
 
       <Footer />
     </div>
