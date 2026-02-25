@@ -26,13 +26,16 @@ declare global {
 
 export function VideoCallModal({ roomName, isOpen, onClose, userName }: VideoCallModalProps) {
     const { t } = useLanguage()
-    const jitsiContainerRef = useRef<HTMLDivElement>(null)
+    const [container, setContainer] = useState<HTMLDivElement | null>(null)
     const [api, setApi] = useState<any>(null)
     const [loading, setLoading] = useState(true)
     const [isFullscreen, setIsFullscreen] = useState(false)
 
     useEffect(() => {
-        if (!isOpen || !roomName || !jitsiContainerRef.current) return
+        if (!isOpen || !roomName || !container) return
+
+        let currentApi: any = null
+        let timeout: any = null
 
         const loadJitsiScript = () => {
             return new Promise<void>((resolve) => {
@@ -57,9 +60,9 @@ export function VideoCallModal({ roomName, isOpen, onClose, userName }: VideoCal
                 roomName: roomName,
                 width: "100%",
                 height: "100%",
-                parentNode: jitsiContainerRef.current,
+                parentNode: container,
                 userInfo: {
-                    displayName: userName
+                    displayName: userName || (roomName.includes('admin') ? 'Support Agent' : 'Customer')
                 },
                 interfaceConfigOverwrite: {
                     SHOW_JITSI_WATERMARK: false,
@@ -86,9 +89,9 @@ export function VideoCallModal({ roomName, isOpen, onClose, userName }: VideoCal
             }
 
             try {
-                const newApi = new window.JitsiMeetExternalAPI(domain, options)
+                currentApi = new window.JitsiMeetExternalAPI(domain, options)
 
-                newApi.addEventListeners({
+                currentApi.addEventListeners({
                     readyToClose: () => {
                         onClose()
                     },
@@ -99,37 +102,34 @@ export function VideoCallModal({ roomName, isOpen, onClose, userName }: VideoCal
                         onClose()
                     },
                     participantJoined: () => {
-                        // Sometimes joined event doesn't fire as expected,
-                        // so we catch participant join to hide loader too
                         setLoading(false)
                     }
                 })
 
-                // Safety timeout to hide loader if events fail
-                const timeout = setTimeout(() => {
+                timeout = setTimeout(() => {
                     setLoading(false)
                 }, 10000)
 
-                setApi(newApi)
-                return () => clearTimeout(timeout)
+                setApi(currentApi)
             } catch (err) {
                 console.error("Jitsi Init Error:", err)
                 setLoading(false)
             }
         }
 
-        const cleanup = initJitsi()
+        initJitsi()
 
         return () => {
-            if (api) {
-                api.dispose()
+            if (currentApi) {
+                currentApi.dispose()
             }
-            // If cleanup is a function (from initJitsi), call it
-            if (typeof cleanup === 'function') {
-                (cleanup as any)()
+            if (timeout) {
+                clearTimeout(timeout)
             }
+            setApi(null)
+            setLoading(true)
         }
-    }, [isOpen, roomName])
+    }, [isOpen, roomName, container])
 
     const toggleFullscreen = () => {
         setIsFullscreen(!isFullscreen)
@@ -163,7 +163,7 @@ export function VideoCallModal({ roomName, isOpen, onClose, userName }: VideoCal
                             <p className="text-white font-bold animate-pulse">{t('videoCall.connecting')}</p>
                         </div>
                     )}
-                    <div ref={jitsiContainerRef} className="w-full h-full" />
+                    <div ref={setContainer} className="w-full h-full" />
                 </div>
             </DialogContent>
         </Dialog>
