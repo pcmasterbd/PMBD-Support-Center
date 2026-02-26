@@ -74,7 +74,7 @@ export function UserDashboardClient({ user, videoCount }: { user: UserData | nul
                                 <span className="uppercase tracking-widest">{getGreeting()}</span>
                             </div>
                             <h2 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tight leading-tight">
-                                {t('userDashboard.hello')}, {user?.name?.split(' ')[0]}! <span className="text-white/40 font-light">👋</span>
+                                {t('userDashboard.hello') !== 'userDashboard.hello' ? t('userDashboard.hello') : 'Hello'}, {user?.name || 'User'}! <span className="text-white/40 font-light">👋</span>
                             </h2>
                             <div className="flex flex-wrap items-center gap-3 pt-2">
                                 <span className="px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-xs font-black uppercase tracking-wider border border-white/20">

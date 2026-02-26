@@ -85,6 +85,7 @@ export const en = {
 
     // ── User Dashboard ──
     userDashboard: {
+        hello: 'Hello',
         goodMorning: 'Good Morning',
         goodAfternoon: 'Good Afternoon',
         goodEvening: 'Good Evening',

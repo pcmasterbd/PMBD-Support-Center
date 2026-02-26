@@ -85,10 +85,10 @@ export const bn = {
 
     // ── User Dashboard ──
     userDashboard: {
+        hello: 'হ্যালো',
         goodMorning: 'শুভ সকাল',
         goodAfternoon: 'শুভ অপরাহ্ন',
         goodEvening: 'শুভ সন্ধ্যা',
-        hello: 'হ্যালো',
         premiumUser: 'প্রিমিয়াম ইউজার',
         welcomeDesc: 'আপনার সাপোর্ট প্যানেলে স্বাগতম। এখান থেকে সফটওয়্যার, টিউটোরিয়াল এবং প্রিমিয়াম রিসোর্স অ্যাক্সেস করুন।',
         registeredProduct: 'আপনার নিবন্ধিত পণ্য',
