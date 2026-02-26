@@ -63,18 +63,29 @@ export function VideoCallButton({ ticketId, isAdmin, userName }: VideoCallButton
             <Button
                 variant={isAdmin ? "default" : "outline"}
                 size="sm"
-                className={`gap-2 font-bold ${isAdmin ? 'bg-primary' : 'border-primary text-primary hover:bg-primary/5'}`}
+                className={`relative overflow-hidden gap-2 font-black uppercase tracking-wider transition-all duration-300 group ${isAdmin
+                        ? 'bg-gradient-to-r from-primary to-blue-600 hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] border-none text-white'
+                        : 'border-2 border-primary text-primary hover:bg-primary/10 shadow-lg hover:shadow-primary/20'
+                    }`}
                 onClick={isAdmin ? handleStartCall : handleJoinCall}
                 disabled={loading || (!isAdmin && !roomName)}
             >
+                {isAdmin && (
+                    <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 skew-x-[20deg]" />
+                )}
                 {loading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                 ) : isAdmin ? (
-                    <Video className="w-4 h-4" />
+                    <div className="relative">
+                        <Video className="w-4 h-4 relative z-10" />
+                        <div className="absolute inset-0 bg-white rounded-full animate-ping opacity-20" />
+                    </div>
                 ) : (
-                    <PhoneCall className="w-4 h-4" />
+                    <PhoneCall className="w-4 h-4 animate-bounce" />
                 )}
-                {isAdmin ? t('videoCall.start') : t('videoCall.join')}
+                <span className="relative z-10">
+                    {isAdmin ? t('videoCall.start') : t('videoCall.join')}
+                </span>
             </Button>
 
             <VideoCallModal

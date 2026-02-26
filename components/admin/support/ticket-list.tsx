@@ -107,15 +107,18 @@ export function TicketList({ tickets }: TicketListProps) {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <h3 className="font-bold text-lg sm:text-xl">সকল টিকেট লিস্ট ({filteredTickets.length})</h3>
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                    <div className="relative flex-1 sm:w-64">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <div className="space-y-6 sm:space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6">
+                <div className="space-y-1">
+                    <h3 className="font-black text-xl sm:text-2xl tracking-tighter">সকল টিকেট লিস্ট ({filteredTickets.length})</h3>
+                    <div className="h-1 w-12 bg-primary/20 rounded-full" />
+                </div>
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                    <div className="relative flex-1 sm:w-72 group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                         <Input
                             placeholder="টিকেট সার্চ করুন..."
-                            className="pl-10 h-10 rounded-xl bg-muted/50 border-transparent focus:bg-background transition-all"
+                            className="pl-11 h-12 rounded-2xl bg-muted/30 border-2 border-transparent focus:border-primary/20 focus:bg-background transition-all shadow-sm"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -125,46 +128,47 @@ export function TicketList({ tickets }: TicketListProps) {
 
             {/* Bulk Actions Bar */}
             {selectedTickets.length > 0 && (
-                <div className="bg-primary/5 border-2 border-primary/20 p-3 sm:p-4 rounded-2xl flex items-center justify-between animate-in fade-in zoom-in-95 duration-200">
-                    <div className="flex items-center gap-2">
-                        <span className="font-extrabold text-primary text-sm sm:text-base">{selectedTickets.length} selected</span>
+                <div className="bg-primary/5 border-2 border-primary/20 p-3 sm:p-5 rounded-[2rem] flex items-center justify-between animate-in slide-in-from-top-2 duration-300 shadow-lg shadow-primary/5">
+                    <div className="flex items-center gap-3 ml-2">
+                        <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                        <span className="font-black text-primary text-sm sm:text-lg tracking-tight">{selectedTickets.length} Selected</span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 sm:gap-4">
                         <Dialog open={bulkReplyOpen} onOpenChange={setBulkReplyOpen}>
                             <DialogTrigger asChild>
-                                <Button size="sm" className="gap-2 h-9 px-4 rounded-xl font-bold shadow-lg shadow-primary/20">
-                                    <MessageSquare className="w-4 h-4" />
-                                    <span className="hidden xs:inline">Bulk Reply</span>
-                                    <span className="xs:hidden">Reply</span>
+                                <Button size="lg" className="gap-2 h-11 px-6 rounded-2xl font-black shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                                    <MessageSquare className="w-5 h-5" />
+                                    <span className="hidden xs:inline text-sm">Bulk Reply</span>
+                                    <span className="xs:hidden text-sm">Reply</span>
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="sm:max-w-[525px] rounded-3xl">
+                            <DialogContent className="sm:max-w-[525px] rounded-[2.5rem] p-8 border-none shadow-2xl">
                                 <form onSubmit={handleBulkReply}>
-                                    <DialogHeader>
-                                        <DialogTitle className="text-2xl font-black">Bulk Reply</DialogTitle>
-                                        <DialogDescription className="text-xs font-medium">
+                                    <DialogHeader className="mb-6">
+                                        <DialogTitle className="text-3xl font-black tracking-tighter">Bulk Reply</DialogTitle>
+                                        <DialogDescription className="text-sm font-medium opacity-70">
                                             Send a message to {selectedTickets.length} selected tickets.
                                         </DialogDescription>
                                     </DialogHeader>
-                                    <div className="grid gap-4 py-4">
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="message" className="font-bold text-xs uppercase tracking-widest text-slate-400">Message</Label>
+                                    <div className="grid gap-6 py-4">
+                                        <div className="grid gap-3">
+                                            <Label htmlFor="message" className="font-black text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60">Message</Label>
                                             <Textarea
                                                 id="message"
                                                 name="message"
                                                 placeholder="Type your reply here..."
-                                                className="min-h-[120px] rounded-2xl border-2 focus:ring-0"
+                                                className="min-h-[140px] rounded-3xl border-2 bg-muted/20 focus:bg-background transition-all p-4 resize-none"
                                                 required
                                             />
                                         </div>
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="status" className="font-bold text-xs uppercase tracking-widest text-slate-400">Update Status</Label>
+                                        <div className="grid gap-3">
+                                            <Label htmlFor="status" className="font-black text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60">Update Status</Label>
                                             <Select name="status" defaultValue="NO_CHANGE">
-                                                <SelectTrigger className="h-11 rounded-xl border-2">
+                                                <SelectTrigger className="h-12 rounded-2xl border-2 bg-muted/20 focus:bg-background transition-all">
                                                     <SelectValue placeholder="Select status" />
                                                 </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="NO_CHANGE">Don't Change Status</SelectItem>
+                                                <SelectContent className="rounded-2xl">
+                                                    <SelectItem value="NO_CHANGE">No Change</SelectItem>
                                                     <SelectItem value="OPEN">Open</SelectItem>
                                                     <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
                                                     <SelectItem value="RESOLVED">Resolved</SelectItem>
@@ -173,73 +177,95 @@ export function TicketList({ tickets }: TicketListProps) {
                                             </Select>
                                         </div>
                                     </div>
-                                    <DialogFooter>
-                                        <Button type="submit" className="w-full h-12 rounded-xl text-lg font-bold shadow-xl shadow-primary/20" disabled={isSubmitting}>
+                                    <DialogFooter className="mt-8">
+                                        <Button type="submit" className="w-full h-14 rounded-2xl text-lg font-black shadow-2xl shadow-primary/20" disabled={isSubmitting}>
                                             {isSubmitting ? 'Sending...' : 'Send Replies'}
                                         </Button>
                                     </DialogFooter>
                                 </form>
                             </DialogContent>
                         </Dialog>
-                        <Button variant="ghost" size="sm" className="h-9 px-3 rounded-xl font-bold text-muted-foreground" onClick={() => setSelectedTickets([])}>
+                        <Button variant="ghost" className="h-11 rounded-2xl font-black text-muted-foreground hover:bg-muted/50 transition-colors px-4" onClick={() => setSelectedTickets([])}>
                             Cancel
                         </Button>
                     </div>
                 </div>
             )}
 
-            <div className="grid gap-3">
-                <div className="flex items-center gap-4 px-4 py-2 text-sm font-medium text-muted-foreground">
+            <div className="grid gap-4">
+                <div className="flex items-center gap-4 px-6 py-2">
                     <Checkbox
+                        id="select-all-tickets"
+                        className="rounded-lg w-5 h-5 border-2"
                         checked={selectedTickets.length === filteredTickets.length && filteredTickets.length > 0}
                         onCheckedChange={toggleSelectAll}
                     />
-                    <span>Select All</span>
+                    <label htmlFor="select-all-tickets" className="text-xs font-black uppercase tracking-[0.15em] text-muted-foreground cursor-pointer select-none">
+                        Select All Tickets
+                    </label>
                 </div>
 
                 {filteredTickets.map((ticket: any) => (
-                    <div key={ticket.id} className="relative group">
+                    <div key={ticket.id} className="relative group/container">
                         <div className="absolute left-4 top-1/2 -translate-y-1/2 z-10">
                             <Checkbox
+                                className="rounded-lg w-5 h-5 border-2 shadow-sm"
                                 checked={selectedTickets.includes(ticket.id)}
                                 onCheckedChange={() => toggleSelectTicket(ticket.id)}
                             />
                         </div>
-                        <Link href={`/dashboard/admin/support/${ticket.id}`} className="block pl-10 xs:pl-12">
-                            <Card className={`p-3 sm:p-4 hover:bg-muted/30 transition-all border-2 rounded-2xl ${selectedTickets.includes(ticket.id) ? 'border-primary bg-primary/5 shadow-md shadow-primary/5' : 'border-transparent hover:border-primary/10'}`}>
-                                <div className="flex items-center justify-between gap-3 sm:gap-4">
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                                            <span className={`text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-lg uppercase border ${ticket.status === 'OPEN' ? 'bg-blue-500/10 text-blue-500 border-blue-200' :
-                                                ticket.status === 'IN_PROGRESS' ? 'bg-purple-500/10 text-purple-500 border-purple-200' :
-                                                    'bg-green-500/10 text-green-500 border-green-200'
+                        <Link href={`/dashboard/admin/support/${ticket.id}`} className="block pl-12 xs:pl-14">
+                            <Card className={`group relative p-4 sm:p-5 transition-all duration-300 border-2 rounded-3xl overflow-hidden ${selectedTickets.includes(ticket.id)
+                                    ? 'border-primary bg-primary/[0.02] shadow-xl shadow-primary/5'
+                                    : 'border-muted/40 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 bg-background'
+                                }`}>
+                                <div className="absolute right-0 top-0 w-32 h-32 bg-gradient-to-bl from-primary/[0.03] to-transparent rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
+
+                                <div className="flex items-center justify-between gap-4">
+                                    <div className="flex-1 min-w-0 space-y-3">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <span className={`text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-full uppercase border-2 tracking-tighter ${ticket.status === 'OPEN' ? 'bg-blue-500/10 text-blue-600 border-blue-500/20' :
+                                                    ticket.status === 'IN_PROGRESS' ? 'bg-purple-500/10 text-purple-600 border-purple-500/20' :
+                                                        'bg-green-500/10 text-green-600 border-green-500/20'
                                                 }`}>
                                                 {ticket.status}
                                             </span>
-                                            <span className={`text-[9px] sm:text-[10px] font-bold uppercase ${ticket.priority === 'HIGH' || ticket.priority === 'URGENT' ? 'text-red-500' : 'text-muted-foreground'
-                                                }`}>
-                                                {ticket.priority}
-                                            </span>
-                                            <span className="text-[9px] sm:text-[10px] text-muted-foreground font-medium">#{ticket.id.slice(-6).toUpperCase()}</span>
+                                            {ticket.priority === 'HIGH' || ticket.priority === 'URGENT' ? (
+                                                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-tighter flex items-center gap-1 text-red-600 px-2 py-0.5 bg-red-500/10 rounded-full border border-red-500/20">
+                                                    <AlertCircle className="w-3 h-3" />
+                                                    {ticket.priority}
+                                                </span>
+                                            ) : (
+                                                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-tighter text-muted-foreground/60 px-2 py-0.5 bg-muted/50 rounded-full border border-muted/20">
+                                                    {ticket.priority}
+                                                </span>
+                                            )}
+                                            <span className="text-[10px] text-muted-foreground/40 font-mono tracking-tight ml-auto sm:ml-0">#{ticket.id.slice(-6).toUpperCase()}</span>
                                         </div>
-                                        <h4 className="font-bold text-sm sm:text-base truncate leading-tight">{ticket.subject}</h4>
-                                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2.5 text-[10px] text-muted-foreground">
-                                            <span className="flex items-center gap-1.5 font-bold">
-                                                <User className="w-3 h-3 text-primary/60" />
-                                                <span className="truncate max-w-[100px]">{ticket.user.name}</span>
-                                            </span>
-                                            <span className="flex items-center gap-1.5 font-bold">
-                                                <MessageSquare className="w-3 h-3 text-primary/60" />
-                                                {ticket._count?.messages || 0}
-                                            </span>
-                                            <span className="flex items-center gap-1.5 font-medium ml-auto sm:ml-0 opacity-70">
-                                                <Clock className="w-3 h-3" />
-                                                {new Date(ticket.updatedAt).toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' })}
-                                            </span>
+
+                                        <h4 className="font-black text-sm sm:text-lg group-hover:text-primary transition-colors leading-tight tracking-tight truncate">{ticket.subject}</h4>
+
+                                        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                                    <User className="w-3 h-3" />
+                                                </div>
+                                                <span className="text-xs font-black tracking-tight">{ticket.user.name}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2 opacity-60">
+                                                <MessageSquare className="w-4 h-4 text-primary" />
+                                                <span className="text-xs font-bold">{ticket._count?.messages || 0}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2 opacity-60 ml-auto sm:ml-0">
+                                                <Clock className="w-4 h-4" />
+                                                <span className="text-xs font-bold">
+                                                    {new Date(ticket.updatedAt).toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' })}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="hidden xs:flex p-2 rounded-xl bg-muted/30 group-hover:bg-primary group-hover:text-primary-foreground transition-all">
-                                        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                                    <div className="hidden sm:flex p-3 rounded-2xl bg-muted/30 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110 transition-all duration-300 shadow-sm">
+                                        <ChevronRight className="w-5 h-5" />
                                     </div>
                                 </div>
                             </Card>

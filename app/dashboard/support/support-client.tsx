@@ -39,74 +39,93 @@ export function SupportClient({ tickets }: { tickets: TicketData[] }) {
     const locale = language === 'bn' ? 'bn-BD' : 'en-US'
 
     return (
-        <div className="space-y-8">
-            <div className="flex flex-col md-tab:flex-row md-tab:items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-2xl sm-std:text-3xl font-bold tracking-tight">{t('supportPage.title')}</h2>
-                    <p className="text-muted-foreground">{t('supportPage.subtitle')}</p>
+        <div className="space-y-10 pb-10 px-0 sm:px-2">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="space-y-1">
+                    <h2 className="text-3xl sm:text-4xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
+                        {t('supportPage.title')}
+                    </h2>
+                    <p className="text-sm sm:text-base text-muted-foreground font-medium max-w-2xl leading-relaxed">
+                        {t('supportPage.subtitle')}
+                    </p>
                 </div>
                 <Link href="/dashboard/support/new">
-                    <Button className="gap-2">
-                        <Plus className="w-4 h-4" />
+                    <Button className="h-12 px-6 rounded-2xl font-black gap-2 shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                        <Plus className="w-5 h-5" />
                         {t('supportPage.newTicket')}
                     </Button>
                 </Link>
             </div>
 
-            <div className="grid gap-4">
+            <div className="grid gap-4 sm:gap-6">
                 {tickets.length > 0 ? (
                     tickets.map((ticket) => (
-                        <Link key={ticket.id} href={`/dashboard/support/${ticket.id}`}>
-                            <Card className="p-4 hover:border-primary/50 transition-all cursor-pointer group">
-                                <div className="flex items-start justify-between gap-4">
-                                    <div className="flex-1 space-y-2">
+                        <Link key={ticket.id} href={`/dashboard/support/${ticket.id}`} className="group relative">
+                            <Card className="p-5 sm:p-6 rounded-[2rem] border-2 border-muted/40 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 overflow-hidden group">
+                                <div className="absolute right-0 top-0 w-32 h-32 bg-gradient-to-bl from-primary/[0.03] to-transparent rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
+
+                                <div className="flex items-center justify-between gap-6">
+                                    <div className="flex-1 min-w-0 space-y-4">
                                         <div className="flex flex-wrap items-center gap-2">
-                                            <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border ${getStatusColor(ticket.status)}`}>
+                                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] uppercase font-black tracking-tight border-2 ${ticket.status === 'OPEN' ? 'bg-blue-500/10 border-blue-500/20 text-blue-600' :
+                                                    ticket.status === 'RESOLVED' ? 'bg-green-500/10 border-green-500/20 text-green-600' :
+                                                        ticket.status === 'IN_PROGRESS' ? 'bg-purple-500/10 border-purple-500/20 text-purple-600' :
+                                                            'bg-muted/30 border-muted/40 text-muted-foreground'
+                                                }`}>
                                                 {ticket.status}
                                             </span>
-                                            <span className={`text-[10px] uppercase font-bold ${getPriorityColor(ticket.priority)}`}>
+                                            <span className={`text-[10px] font-black uppercase tracking-widest ${getPriorityColor(ticket.priority)}`}>
                                                 {ticket.priority} {t('supportPage.priority')}
                                             </span>
                                         </div>
-                                        <h3 className="font-bold text-base sm:text-lg group-hover:text-primary transition-colors line-clamp-1">{ticket.subject}</h3>
-                                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                                            <div className="flex items-center gap-1">
-                                                <MessageSquare className="w-3 h-3" />
+
+                                        <h3 className="text-lg sm:text-xl font-black tracking-tight group-hover:text-primary transition-colors truncate">{ticket.subject}</h3>
+
+                                        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[10px] sm:text-xs text-muted-foreground font-bold">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                                    <MessageSquare className="w-3.5 h-3.5" />
+                                                </div>
                                                 <span>{ticket._count.messages} {t('supportPage.messages')}</span>
                                             </div>
-                                            <div className="flex items-center gap-1">
-                                                <Clock className="w-3 h-3" />
+                                            <div className="flex items-center gap-2 opacity-60">
+                                                <Clock className="w-4 h-4" />
                                                 <span>{t('supportPage.updated')}: {new Date(ticket.updatedAt).toLocaleDateString(locale)}</span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="p-2 rounded-full bg-muted/50 group-hover:bg-primary/10 group-hover:text-primary transition-all">
-                                        <ChevronRight className="w-5 h-5" />
+                                    <div className="hidden sm:flex p-3 rounded-2xl bg-muted/30 group-hover:bg-primary group-hover:text-primary-foreground group-hover:rotate-12 transition-all duration-300">
+                                        <ChevronRight className="w-6 h-6" />
                                     </div>
                                 </div>
                             </Card>
                         </Link>
                     ))
                 ) : (
-                    <Card className="p-8 sm:p-20 text-center flex flex-col items-center justify-center border-dashed">
-                        <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center mb-6">
-                            <AlertCircle className="w-8 h-8 text-muted-foreground" />
+                    <Card className="p-12 sm:p-24 text-center flex flex-col items-center justify-center border-dashed border-2 rounded-[3rem] bg-muted/5">
+                        <div className="w-20 h-20 rounded-[2rem] bg-muted/30 flex items-center justify-center mb-8 rotate-12 group-hover:rotate-0 transition-transform">
+                            <AlertCircle className="w-10 h-10 text-muted-foreground" />
                         </div>
-                        <h3 className="text-xl font-bold">{t('supportPage.noTickets')}</h3>
-                        <p className="text-muted-foreground max-w-sm mx-auto mt-2">
+                        <h3 className="text-2xl font-black tracking-tighter">{t('supportPage.noTickets')}</h3>
+                        <p className="text-muted-foreground max-w-sm mx-auto mt-4 text-sm font-medium leading-relaxed">
                             {t('supportPage.noTicketsDesc')}
                         </p>
-                        <Link href="/dashboard/support/new" className="mt-8">
-                            <Button size="lg">{t('supportPage.startNow')}</Button>
+                        <Link href="/dashboard/support/new" className="mt-10">
+                            <Button size="lg" className="h-14 px-8 rounded-2xl font-black text-lg shadow-xl shadow-primary/10">
+                                {t('supportPage.startNow')}
+                            </Button>
                         </Link>
                     </Card>
                 )}
             </div>
 
             {/* FAQ/Help section */}
-            <div className="pt-10">
-                <h3 className="font-bold text-xl mb-6">{t('supportPage.faq')}</h3>
-                <div className="grid md-tab:grid-cols-2 gap-4">
+            <div className="pt-16 sm:pt-20 border-t border-muted/40">
+                <div className="flex items-center gap-4 mb-8">
+                    <h3 className="font-black text-2xl sm:text-3xl tracking-tighter">{t('supportPage.faq')}</h3>
+                    <div className="h-1 w-20 bg-primary/20 rounded-full" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <FaqItem q={t('supportPage.faqQ1')} a={t('supportPage.faqA1')} qLabel={t('supportPage.question')} aLabel={t('supportPage.answer')} />
                     <FaqItem q={t('supportPage.faqQ2')} a={t('supportPage.faqA2')} qLabel={t('supportPage.question')} aLabel={t('supportPage.answer')} />
                     <FaqItem q={t('supportPage.faqQ3')} a={t('supportPage.faqA3')} qLabel={t('supportPage.question')} aLabel={t('supportPage.answer')} />
@@ -119,9 +138,9 @@ export function SupportClient({ tickets }: { tickets: TicketData[] }) {
 
 function FaqItem({ q, a, qLabel, aLabel }: { q: string; a: string; qLabel: string; aLabel: string }) {
     return (
-        <Card className="p-5">
-            <h4 className="font-bold text-sm mb-2 text-primary">{qLabel}: {q}</h4>
-            <p className="text-sm text-muted-foreground leading-relaxed">{aLabel}: {a}</p>
+        <Card className="p-6 sm:p-8 rounded-3xl border-2 border-muted/30 hover:border-primary/20 hover:shadow-xl transition-all group">
+            <h4 className="font-black text-base sm:text-lg mb-4 text-primary tracking-tight leading-snug group-hover:translate-x-1 transition-transform">{qLabel}: {q}</h4>
+            <p className="text-sm text-muted-foreground leading-relaxed font-medium opacity-80">{aLabel}: {a}</p>
         </Card>
     )
 }
